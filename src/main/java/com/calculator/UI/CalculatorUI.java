@@ -23,6 +23,13 @@ public class CalculatorUI extends javax.swing.JFrame {
         zeroButton.addActionListener(numberButtonListener);
         oneButton.addActionListener(numberButtonListener);
         twoButton.addActionListener(numberButtonListener);
+        threeButton.addActionListener(numberButtonListener);
+        fourButton.addActionListener(numberButtonListener);
+        fiveButton.addActionListener(numberButtonListener);
+        sixButton.addActionListener(numberButtonListener);
+        sevenButton.addActionListener(numberButtonListener);
+        eightButton.addActionListener(numberButtonListener);
+        nineButton.addActionListener(numberButtonListener);
         
         displayField.setText("0"); // Display 0 on startup
     }
@@ -40,23 +47,30 @@ public class CalculatorUI extends javax.swing.JFrame {
         oneButton = new javax.swing.JButton();
         twoButton = new javax.swing.JButton();
         displayField = new javax.swing.JTextField();
+        threeButton = new javax.swing.JButton();
+        fourButton = new javax.swing.JButton();
+        fiveButton = new javax.swing.JButton();
+        sixButton = new javax.swing.JButton();
+        sevenButton = new javax.swing.JButton();
+        eightButton = new javax.swing.JButton();
+        nineButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         zeroButton.setBackground(new java.awt.Color(0, 0, 0));
-        zeroButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        zeroButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         zeroButton.setForeground(new java.awt.Color(255, 255, 255));
         zeroButton.setText("0");
         zeroButton.setPreferredSize(new java.awt.Dimension(35, 35));
 
         oneButton.setBackground(new java.awt.Color(0, 0, 0));
-        oneButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        oneButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         oneButton.setForeground(new java.awt.Color(255, 255, 255));
         oneButton.setText("1");
         oneButton.setPreferredSize(new java.awt.Dimension(35, 35));
 
         twoButton.setBackground(new java.awt.Color(0, 0, 0));
-        twoButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        twoButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         twoButton.setForeground(new java.awt.Color(255, 255, 255));
         twoButton.setText("2");
         twoButton.setPreferredSize(new java.awt.Dimension(35, 35));
@@ -72,32 +86,140 @@ public class CalculatorUI extends javax.swing.JFrame {
         displayField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         displayField.setToolTipText("");
 
+        threeButton.setBackground(new java.awt.Color(0, 0, 0));
+        threeButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        threeButton.setForeground(new java.awt.Color(255, 255, 255));
+        threeButton.setText("3");
+        threeButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        threeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                threeButtonActionPerformed(evt);
+            }
+        });
+
+        fourButton.setBackground(new java.awt.Color(0, 0, 0));
+        fourButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        fourButton.setForeground(new java.awt.Color(255, 255, 255));
+        fourButton.setText("4");
+        fourButton.setActionCommand("");
+        fourButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        fourButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fourButtonActionPerformed(evt);
+            }
+        });
+
+        fiveButton.setBackground(new java.awt.Color(0, 0, 0));
+        fiveButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        fiveButton.setForeground(new java.awt.Color(255, 255, 255));
+        fiveButton.setText("5");
+        fiveButton.setActionCommand("");
+        fiveButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        fiveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fiveButtonActionPerformed(evt);
+            }
+        });
+
+        sixButton.setBackground(new java.awt.Color(0, 0, 0));
+        sixButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        sixButton.setForeground(new java.awt.Color(255, 255, 255));
+        sixButton.setText("6");
+        sixButton.setActionCommand("");
+        sixButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        sixButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sixButtonActionPerformed(evt);
+            }
+        });
+
+        sevenButton.setBackground(new java.awt.Color(0, 0, 0));
+        sevenButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        sevenButton.setForeground(new java.awt.Color(255, 255, 255));
+        sevenButton.setText("7");
+        sevenButton.setActionCommand("");
+        sevenButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        sevenButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sevenButtonActionPerformed(evt);
+            }
+        });
+
+        eightButton.setBackground(new java.awt.Color(0, 0, 0));
+        eightButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        eightButton.setForeground(new java.awt.Color(255, 255, 255));
+        eightButton.setText("8");
+        eightButton.setActionCommand("");
+        eightButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        eightButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eightButtonActionPerformed(evt);
+            }
+        });
+
+        nineButton.setBackground(new java.awt.Color(0, 0, 0));
+        nineButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        nineButton.setForeground(new java.awt.Color(255, 255, 255));
+        nineButton.setText("9");
+        nineButton.setActionCommand("");
+        nineButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        nineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nineButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(displayField)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(zeroButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(oneButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(twoButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 324, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(displayField)
-                .addContainerGap())
+                        .addComponent(twoButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(threeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(fourButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fiveButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sixButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(sevenButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eightButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nineButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 283, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(displayField, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sevenButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eightButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nineButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fourButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fiveButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sixButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(oneButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(twoButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(twoButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(threeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(zeroButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
@@ -109,6 +231,34 @@ public class CalculatorUI extends javax.swing.JFrame {
     private void twoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_twoButtonActionPerformed
+
+    private void threeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_threeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_threeButtonActionPerformed
+
+    private void fourButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fourButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fourButtonActionPerformed
+
+    private void fiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fiveButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fiveButtonActionPerformed
+
+    private void sixButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sixButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sixButtonActionPerformed
+
+    private void sevenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sevenButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sevenButtonActionPerformed
+
+    private void eightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eightButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_eightButtonActionPerformed
+
+    private void nineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nineButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nineButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -138,16 +288,21 @@ public class CalculatorUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CalculatorUI().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new CalculatorUI().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField displayField;
+    private javax.swing.JButton eightButton;
+    private javax.swing.JButton fiveButton;
+    private javax.swing.JButton fourButton;
+    private javax.swing.JButton nineButton;
     private javax.swing.JButton oneButton;
+    private javax.swing.JButton sevenButton;
+    private javax.swing.JButton sixButton;
+    private javax.swing.JButton threeButton;
     private javax.swing.JButton twoButton;
     private javax.swing.JButton zeroButton;
     // End of variables declaration//GEN-END:variables
@@ -170,7 +325,7 @@ private void appendToDisplay(String text) {
 
 
 // Define a common ActionListener for number buttons
-private ActionListener numberButtonListener = e -> {
+private final ActionListener numberButtonListener = e -> {
     JButton sourceButton = (JButton) e.getSource();
     appendToDisplay(sourceButton.getText());
 };
