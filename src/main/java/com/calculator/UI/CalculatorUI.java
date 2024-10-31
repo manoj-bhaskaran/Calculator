@@ -4,6 +4,9 @@
  */
 package com.calculator.UI;
 
+import javax.swing.*;
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author manoj
@@ -15,6 +18,13 @@ public class CalculatorUI extends javax.swing.JFrame {
      */
     public CalculatorUI() {
         initComponents();
+        
+        // Attach the ActionListener to number buttons
+        zeroButton.addActionListener(numberButtonListener);
+        oneButton.addActionListener(numberButtonListener);
+        twoButton.addActionListener(numberButtonListener);
+        
+        displayField.setText("0"); // Display 0 on startup
     }
 
     /**
@@ -144,17 +154,25 @@ public class CalculatorUI extends javax.swing.JFrame {
 
 // Method to handle appending numbers
 private void appendToDisplay(String text) {
-    displayField.setText(displayField.getText() + text);
+    // If the display is "0" and "0" is pressed again, do nothing
+    if ("0".equals(displayField.getText()) && "0".equals(text)) {
+        return;
+    }
+
+    // If the display is "0" and a non-zero number is pressed, replace it
+    if ("0".equals(displayField.getText())) {
+        displayField.setText(text);
+    } else {
+        // Otherwise, append the pressed number to the display
+        displayField.setText(displayField.getText() + text);
+    }
 }
+
 
 // Define a common ActionListener for number buttons
 private ActionListener numberButtonListener = e -> {
     JButton sourceButton = (JButton) e.getSource();
     appendToDisplay(sourceButton.getText());
 };
-
-zeroButton.addActionListener(numberButtonListener);
-oneButton.addActionListener(numberButtonListener);
-twoButton.addActionListener(numberButtonListener);
     
 }
