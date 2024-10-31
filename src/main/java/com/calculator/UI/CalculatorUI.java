@@ -141,4 +141,20 @@ public class CalculatorUI extends javax.swing.JFrame {
     private javax.swing.JButton twoButton;
     private javax.swing.JButton zeroButton;
     // End of variables declaration//GEN-END:variables
+
+// Method to handle appending numbers
+private void appendToDisplay(String text) {
+    displayField.setText(displayField.getText() + text);
+}
+
+// Define a common ActionListener for number buttons
+private ActionListener numberButtonListener = e -> {
+    JButton sourceButton = (JButton) e.getSource();
+    appendToDisplay(sourceButton.getText());
+};
+
+zeroButton.addActionListener(numberButtonListener);
+oneButton.addActionListener(numberButtonListener);
+twoButton.addActionListener(numberButtonListener);
+    
 }
