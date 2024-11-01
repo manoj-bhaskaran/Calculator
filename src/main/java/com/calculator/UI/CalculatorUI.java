@@ -51,7 +51,8 @@ private void flashButton(JButton button, Color flashColor, int duration) {
 
         // Array of all number buttons
         JButton[] numberButtons = {zeroButton, oneButton, twoButton, threeButton, fourButton,
-                                   fiveButton, sixButton, sevenButton, eightButton, nineButton};
+                                   fiveButton, sixButton, sevenButton, eightButton, nineButton,
+                                   decimalButton};
 
         // Add action listener to each number button
         for (JButton button : numberButtons) {
@@ -111,6 +112,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         minusButton = new javax.swing.JButton();
         multiplyButton = new javax.swing.JButton();
         divideButton = new javax.swing.JButton();
+        decimalButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -344,6 +346,19 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         buttonPanel.add(divideButton, gridBagConstraints);
         divideButton.getAccessibleContext().setAccessibleName("\u00F7");
 
+        decimalButton.setBackground(new java.awt.Color(0, 0, 0));
+        decimalButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        decimalButton.setForeground(new java.awt.Color(255, 255, 255));
+        decimalButton.setText(".");
+        decimalButton.setToolTipText("");
+        decimalButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        decimalButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(decimalButton, gridBagConstraints);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -421,6 +436,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton decimalButton;
     private javax.swing.JTextField displayField;
     private javax.swing.JButton divideButton;
     private javax.swing.JButton eightButton;
