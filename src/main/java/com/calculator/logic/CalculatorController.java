@@ -1,5 +1,6 @@
 package com.calculator.logic;
 
+import com.calculator.UI.SymbolFormatter;
 import javax.swing.JTextField;
 import java.text.DecimalFormat;
 
@@ -36,19 +37,22 @@ public class CalculatorController {
         if (lastWasOperator) {
             // Replace the last operator
             calculatorLogic.replaceLastOperator(operation);
-            operatorField.setText(operation); // Update displayed operator
+            // Use helper to get the display symbol
+            operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
         } else {
             // If last entry was not an operator, proceed normally
             if (!displayField.getText().isEmpty()) {
                 double currentOperand = Double.parseDouble(displayField.getText());
                 calculatorLogic.pushOperand(currentOperand);
                 calculatorLogic.pushOperator(operation);
-                operatorField.setText(operation);
+                // Use helper to get the display symbol
+                operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
                 isOperatorPending = true;
                 lastWasOperator = true; // Set flag as last was an operator
             }
         }
     }
+
 
 
     public void calculateResult() {

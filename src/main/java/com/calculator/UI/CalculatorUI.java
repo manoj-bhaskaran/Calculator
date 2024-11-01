@@ -67,6 +67,10 @@ private void flashButton(JButton button, Color flashColor, int duration) {
             flashButton(minusButton, flashColor, flashDuration);
             controller.handleOperation("-"); // Your existing operation logic
         });
+        multiplyButton.addActionListener(e -> {
+            flashButton(multiplyButton, flashColor, flashDuration);
+            controller.handleOperation("*"); // Your existing operation logic
+        });
         equalsButton.addActionListener(e -> {
              flashButton(equalsButton, flashColor, flashDuration);
             controller.calculateResult(); // Your existing result logic
@@ -100,6 +104,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         plusButton = new javax.swing.JButton();
         equalsButton = new javax.swing.JButton();
         minusButton = new javax.swing.JButton();
+        multiplyButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -295,6 +300,25 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         buttonPanel.add(minusButton, gridBagConstraints);
         minusButton.getAccessibleContext().setAccessibleName("-");
 
+        multiplyButton.setBackground(new java.awt.Color(0, 0, 0));
+        multiplyButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        multiplyButton.setForeground(new java.awt.Color(255, 255, 255));
+        multiplyButton.setText("\u00D7");
+        multiplyButton.setToolTipText("");
+        multiplyButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        multiplyButton.setLabel("\u00D7");
+        multiplyButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        multiplyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multiplyButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(multiplyButton, gridBagConstraints);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -328,6 +352,10 @@ private void flashButton(JButton button, Color flashColor, int duration) {
     private void displayFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_displayFieldActionPerformed
+
+    private void multiplyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multiplyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_multiplyButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -371,6 +399,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
     private javax.swing.JButton fiveButton;
     private javax.swing.JButton fourButton;
     private javax.swing.JButton minusButton;
+    private javax.swing.JButton multiplyButton;
     private javax.swing.JButton nineButton;
     private javax.swing.JButton oneButton;
     private javax.swing.JTextField operatorField;
