@@ -85,6 +85,10 @@ private void flashButton(JButton button, Color flashColor, int duration) {
             flashButton(equalsButton, flashColor, flashDuration);
             controller.handleDelete();
         });
+        allClearButton.addActionListener(e -> {
+            flashButton(equalsButton, flashColor, flashDuration);
+            controller.handleAllClear();
+        });
     }
 
     /**
@@ -118,6 +122,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         divideButton = new javax.swing.JButton();
         decimalButton = new javax.swing.JButton();
         delButton = new javax.swing.JButton();
+        allClearButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -369,7 +374,6 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         delButton.setForeground(new java.awt.Color(255, 255, 255));
         delButton.setText("DEL");
         delButton.setToolTipText("");
-        delButton.setActionCommand("DEL");
         delButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         delButton.setPreferredSize(new java.awt.Dimension(35, 35));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -377,7 +381,19 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         buttonPanel.add(delButton, gridBagConstraints);
-        delButton.getAccessibleContext().setAccessibleName("DEL");
+
+        allClearButton.setBackground(new java.awt.Color(255, 0, 0));
+        allClearButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        allClearButton.setForeground(new java.awt.Color(255, 255, 255));
+        allClearButton.setText("AC");
+        allClearButton.setToolTipText("");
+        allClearButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        allClearButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(allClearButton, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -455,6 +471,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton allClearButton;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton decimalButton;
     private javax.swing.JButton delButton;
