@@ -2,8 +2,6 @@ package com.calculator.logic;
 
 import com.calculator.UI.SymbolFormatter;
 import javax.swing.JTextField;
-import java.text.DecimalFormat;
-import java.math.RoundingMode;
 
 public class CalculatorController {
 
@@ -22,8 +20,13 @@ public class CalculatorController {
     }
 
     public void appendToDisplay(String text) {
+        // Allow 15 characters limit per operand
+        if (displayField.getText().length() >= 15 && !isOperatorPending && !isResultDisplayed) {
+            return; // Prevent further input if display is at the limit and not starting a new operand
+        }
+
         if (text.equals(".")) {
-            // If decimal is pressed after a result or new operation, start fresh with "0."
+            // If decimal is pressed after a result or operator, start fresh with "0."
             if (isResultDisplayed || isOperatorPending) {
                 displayField.setText("0.");
                 isResultDisplayed = false;
