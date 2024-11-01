@@ -3,6 +3,7 @@ package com.calculator.logic;
 import com.calculator.UI.SymbolFormatter;
 import javax.swing.JTextField;
 import java.text.DecimalFormat;
+import java.math.RoundingMode;
 
 public class CalculatorController {
 
@@ -53,14 +54,45 @@ public class CalculatorController {
         }
     }
 
-
-
     public void calculateResult() {
         if (!displayField.getText().isEmpty()) {
             calculatorLogic.pushOperand(Double.parseDouble(displayField.getText()));
             double result = calculatorLogic.getResult();
-            DecimalFormat format = new DecimalFormat("0.#");
-            displayField.setText(format.format(result));
+
+            // Convert result to string for length and character limit checks
+            String resultString = Double.toString(result);
+
+            if (resultString.length() > 15) {
+                int maxWholeDigits = result < 0 ? 14 : 15; // Reserve a character for the sign if negative
+                int wholeDigits = resultString.contains(".") ? resultString.indexOf('.') : resultString.length();
+
+                if (wholeDigits > maxWholeDigits) {
+                    // If the integer part alone exceeds 15 characters, display "OvFlow"
+                    displayField.setText("OvFlow");
+                } else {
+                    // Calculate maximum decimal places to fit within 15 characters
+                    int decimalPlaces = 15 - wholeDigits - 1; // 1 reserved for decimal point
+                    String formatPattern = "0." + "0".repeat(decimalPlaces);
+
+                    // Create a formatter with the calculated pattern
+                    DecimalFormat format = new DecimalFormat(formatPattern);
+                    format.setRoundingMode(RoundingMode.HALF_UP);
+
+                    // Format the result to fit the display limit
+                    resultString = format.format(result);
+
+                    // Final check to ensure result fits within 15 characters
+                    if (resultString.length() > 15) {
+                        displayField.setText("OvFlow");
+                    } else {
+                        displayField.setText(resultString);
+                    }
+                }
+            } else {
+                // Display directly if within 15-character limit
+                displayField.setText(resultString);
+            }
+
             operatorField.setText("");
             calculatorLogic.clear();
             isResultDisplayed = true;
