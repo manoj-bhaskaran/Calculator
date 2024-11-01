@@ -22,14 +22,32 @@ public class CalculatorController {
     }
 
     public void appendToDisplay(String text) {
+        if (text.equals(".")) {
+            // If decimal is pressed after a result or new operation, start fresh with "0."
+            if (isResultDisplayed || isOperatorPending) {
+                displayField.setText("0.");
+                isResultDisplayed = false;
+                isOperatorPending = false;
+                lastWasOperator = false;
+            } else if (!displayField.getText().contains(".")) {
+                // Only add decimal if current input does not contain one already
+                displayField.setText(displayField.getText() + ".");
+            }
+            return; // End here if decimal is added
+        }
+
+        // For non-decimal input
         if (isResultDisplayed || isOperatorPending) {
-            displayField.setText(text); 
+            // Start new number after result or operator
+            displayField.setText(text);
             isResultDisplayed = false;
             isOperatorPending = false;
             lastWasOperator = false;
         } else if ("0".equals(displayField.getText())) {
+            // Replace leading zero unless adding a decimal point
             displayField.setText(text.equals("0") ? "0" : text);
         } else {
+            // Append input as usual
             displayField.setText(displayField.getText() + text);
         }
     }
