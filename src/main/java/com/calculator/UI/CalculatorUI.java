@@ -71,6 +71,11 @@ private void flashButton(JButton button, Color flashColor, int duration) {
             flashButton(multiplyButton, flashColor, flashDuration);
             controller.handleOperation("*"); // Your existing operation logic
         });
+        divideButton.addActionListener(e -> {
+            flashButton(divideButton, flashColor, flashDuration); 
+            controller.handleOperation("/");
+        });
+
         equalsButton.addActionListener(e -> {
              flashButton(equalsButton, flashColor, flashDuration);
             controller.calculateResult(); // Your existing result logic
@@ -105,6 +110,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         equalsButton = new javax.swing.JButton();
         minusButton = new javax.swing.JButton();
         multiplyButton = new javax.swing.JButton();
+        divideButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -298,7 +304,6 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         buttonPanel.add(minusButton, gridBagConstraints);
-        minusButton.getAccessibleContext().setAccessibleName("-");
 
         multiplyButton.setBackground(new java.awt.Color(0, 0, 0));
         multiplyButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
@@ -318,6 +323,26 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         buttonPanel.add(multiplyButton, gridBagConstraints);
+
+        divideButton.setBackground(new java.awt.Color(0, 0, 0));
+        divideButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        divideButton.setForeground(new java.awt.Color(255, 255, 255));
+        divideButton.setText("\u00F7");
+        divideButton.setToolTipText("");
+        divideButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        divideButton.setLabel("\u00F7");
+        divideButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        divideButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                divideButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(divideButton, gridBagConstraints);
+        divideButton.getAccessibleContext().setAccessibleName("\u00F7");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -357,6 +382,10 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         // TODO add your handling code here:
     }//GEN-LAST:event_multiplyButtonActionPerformed
 
+    private void divideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_divideButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_divideButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -393,6 +422,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JTextField displayField;
+    private javax.swing.JButton divideButton;
     private javax.swing.JButton eightButton;
     private javax.swing.JButton equalsButton;
     private javax.swing.JPanel fieldPanel;
