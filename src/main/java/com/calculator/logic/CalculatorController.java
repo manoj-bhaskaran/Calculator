@@ -147,4 +147,16 @@ public class CalculatorController {
             displayField.setText("0");
         }
     }
+    
+    public void handleAllClear () {
+        // Clear display fields
+        displayField.setText("0");
+        operatorField.setText("");
+        
+        // Reset calculator logic and flags
+        calculatorLogic.clear();  // Assuming clear method resets all stored operands and operators
+        isResultDisplayed = false;
+        isOperatorPending = false;
+        lastWasOperator = false;
+    }
 }
