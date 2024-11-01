@@ -19,6 +19,7 @@ public class CalculatorUI extends javax.swing.JFrame {
     private final CalculatorLogic calculatorLogic = new CalculatorLogic();
     private boolean isOperatorPressed = false;
     private boolean isResultDisplayed = false; // Flag to track if result is displayed
+    private boolean isOperatorPending = false; // Flag to track if operator was pressed and waiting for next number
 
     /**
      * Creates new form CalculatorUI
@@ -292,26 +293,30 @@ public class CalculatorUI extends javax.swing.JFrame {
 
     // Method to handle appending numbers to the display
     private void appendToDisplay(String text) {
-        if (isResultDisplayed) {
-            displayField.setText(text); // Start fresh if result was previously displayed
-            isResultDisplayed = false;
-        } else if ("0".equals(displayField.getText()) && !"0".equals(text)) {
-            displayField.setText(text); // Replace "0" with new number
+        // If the result was displayed or an operator is pending, clear the display
+        if (isResultDisplayed || isOperatorPending) {
+            displayField.setText(text); // Replace with the new number
+            isResultDisplayed = false;  // Reset flags
+            isOperatorPending = false;
+        } else if ("0".equals(displayField.getText())) {
+            // If display shows "0" and "0" is pressed again, ignore it.
+            // Replace "0" with a non-zero digit, if entered.
+            displayField.setText(text.equals("0") ? "0" : text);
         } else {
-            displayField.setText(displayField.getText() + text); // Append text
+            displayField.setText(displayField.getText() + text); // Append text if no flags are set
         }
     }
+
 
     // Method to handle operator button presses
     private void handleOperation(String operation) {
         if (!displayField.getText().isEmpty()) {
             double currentOperand = Double.parseDouble(displayField.getText());
             calculatorLogic.pushOperand(currentOperand);
-            calculatorLogic.pushOperator(operation);
+            calculatorLogic.pushOperator(operation);            
             operatorField.setText(operation); // Show current operator in operator field
             isOperatorPressed = true;
-            displayField.setText(""); // Clear display for next operand
-            isResultDisplayed = false;
+            isOperatorPending = true;         // Set flag to clear display on next number input
         }
     }
 
