@@ -59,37 +59,43 @@ public class CalculatorController {
             calculatorLogic.pushOperand(Double.parseDouble(displayField.getText()));
             double result = calculatorLogic.getResult();
 
-            // Convert result to string for length and character limit checks
-            String resultString = Double.toString(result);
+            // Define a threshold for underflow: smaller values will be displayed as "UndFlow"
+            final double underflowThreshold = 1e-13; // Adjust as needed to fit 13 zeros for the display
 
-            if (resultString.length() > 15) {
-                int maxWholeDigits = result < 0 ? 14 : 15; // Reserve a character for the sign if negative
-                int wholeDigits = resultString.contains(".") ? resultString.indexOf('.') : resultString.length();
-
-                if (wholeDigits > maxWholeDigits) {
-                    // If the integer part alone exceeds 15 characters, display "OvFlow"
-                    displayField.setText("OvFlow");
+            // Check for underflow: very small numbers below threshold will be shown as "UndFlow"
+            if (Math.abs(result) < underflowThreshold && result != 0) {
+                displayField.setText("UndFlow");
+            } else {
+                String resultString;
+                if (result == (int) result) {
+                    // If the result is an integer, display without decimal places
+                    resultString = Integer.toString((int) result);
                 } else {
-                    // Calculate maximum decimal places to fit within 15 characters
-                    int decimalPlaces = 15 - wholeDigits - 1; // 1 reserved for decimal point
-                    String formatPattern = "0." + "0".repeat(decimalPlaces);
+                    // Convert result to string, limiting to 15 significant characters
+                    resultString = String.format("%.15f", result)
+                        .replaceAll("0*$", "") // Trim trailing zeros
+                        .replaceAll("\\.$", ""); // Remove trailing decimal point if exists
 
-                    // Create a formatter with the calculated pattern
-                    DecimalFormat format = new DecimalFormat(formatPattern);
-                    format.setRoundingMode(RoundingMode.HALF_UP);
+                    // Ensure result fits within 15 characters, handling overflow
+                    int maxWholeDigits = result < 0 ? 14 : 15; // Adjust for negative sign if needed
+                    int wholeDigits = resultString.contains(".") ? resultString.indexOf('.') : resultString.length();
 
-                    // Format the result to fit the display limit
-                    resultString = format.format(result);
-
-                    // Final check to ensure result fits within 15 characters
-                    if (resultString.length() > 15) {
+                    if (wholeDigits > maxWholeDigits) {
                         displayField.setText("OvFlow");
-                    } else {
-                        displayField.setText(resultString);
+                        return;
+                    } else if (resultString.length() > 15) {
+                        int decimalPlaces = 15 - wholeDigits - 1;
+                        resultString = String.format("%." + decimalPlaces + "f", result)
+                            .replaceAll("0*$", "").replaceAll("\\.$", "");
+
+                        if (resultString.length() > 15) {
+                            displayField.setText("OvFlow");
+                            return;
+                        }
                     }
                 }
-            } else {
-                // Display directly if within 15-character limit
+
+                // Display the formatted result
                 displayField.setText(resultString);
             }
 
