@@ -22,8 +22,18 @@ public class CalculatorController {
     }
 
     public void appendToDisplay(String text) {
+        // Clear "OvFlow" if it is currently displayed and start fresh with new input
+        if ("OvFlow".equals(displayField.getText())) {
+            displayField.setText(""); // Clear the display to accept new input
+        }
+
+        // Allow 15 characters limit per operand
+        if (displayField.getText().length() >= 15 && !isOperatorPending && !isResultDisplayed) {
+            return; // Prevent further input if display is at the limit and not starting a new operand
+        }
+
         if (text.equals(".")) {
-            // If decimal is pressed after a result or new operation, start fresh with "0."
+            // If decimal is pressed after a result or operator, start fresh with "0."
             if (isResultDisplayed || isOperatorPending) {
                 displayField.setText("0.");
                 isResultDisplayed = false;
