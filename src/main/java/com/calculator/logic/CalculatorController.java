@@ -8,9 +8,9 @@ public class CalculatorController {
     private final CalculatorLogic calculatorLogic;
     private final JTextField displayField;
     private final JTextField operatorField;
-    private boolean isOperatorPressed = false;
     private boolean isResultDisplayed = false;
     private boolean isOperatorPending = false;
+    private boolean lastWasOperator = false; // Flag to track if the last entry was an operator
 
     public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField) {
         this.calculatorLogic = calculatorLogic;
@@ -24,6 +24,7 @@ public class CalculatorController {
             displayField.setText(text); 
             isResultDisplayed = false;
             isOperatorPending = false;
+            lastWasOperator = false;
         } else if ("0".equals(displayField.getText())) {
             displayField.setText(text.equals("0") ? "0" : text);
         } else {
@@ -32,15 +33,23 @@ public class CalculatorController {
     }
 
     public void handleOperation(String operation) {
-        if (!displayField.getText().isEmpty()) {
-            double currentOperand = Double.parseDouble(displayField.getText());
-            calculatorLogic.pushOperand(currentOperand);
-            calculatorLogic.pushOperator(operation);
-            operatorField.setText(operation);
-            isOperatorPressed = true;
-            isOperatorPending = true;
+        if (lastWasOperator) {
+            // Replace the last operator
+            calculatorLogic.replaceLastOperator(operation);
+            operatorField.setText(operation); // Update displayed operator
+        } else {
+            // If last entry was not an operator, proceed normally
+            if (!displayField.getText().isEmpty()) {
+                double currentOperand = Double.parseDouble(displayField.getText());
+                calculatorLogic.pushOperand(currentOperand);
+                calculatorLogic.pushOperator(operation);
+                operatorField.setText(operation);
+                isOperatorPending = true;
+                lastWasOperator = true; // Set flag as last was an operator
+            }
         }
     }
+
 
     public void calculateResult() {
         if (!displayField.getText().isEmpty()) {
@@ -51,6 +60,7 @@ public class CalculatorController {
             operatorField.setText("");
             calculatorLogic.clear();
             isResultDisplayed = true;
+            lastWasOperator = false;
         }
     }
 }

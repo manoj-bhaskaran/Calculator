@@ -8,6 +8,7 @@ import com.calculator.logic.CalculatorLogic;
 import com.calculator.logic.CalculatorController;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.Color;
 
 /**
  *
@@ -27,10 +28,24 @@ public class CalculatorUI extends javax.swing.JFrame {
         attachListeners();  // Ensure this is added to enable button functionality
 
     }
+    
+private void flashButton(JButton button, Color flashColor, int duration) {
+    Color originalColor = button.getBackground();
+    button.setBackground(flashColor);
+
+    new javax.swing.Timer(duration, e -> {
+        button.setBackground(originalColor);
+        ((javax.swing.Timer) e.getSource()).stop();
+    }).start();
+}
 
     private void attachListeners() {
+        Color flashColor = new Color(57, 255, 20);  // Set your custom flash color
+        int flashDuration = 100;                    // Set your custom flash duration in milliseconds
+
         ActionListener numberButtonListener = e -> {
             JButton sourceButton = (JButton) e.getSource();
+            flashButton(sourceButton, flashColor, flashDuration);
             controller.appendToDisplay(sourceButton.getText());
         };
 
@@ -44,8 +59,18 @@ public class CalculatorUI extends javax.swing.JFrame {
         }
 
         // Specific action listeners for operations
-        plusButton.addActionListener(e -> controller.handleOperation("+"));
-        equalsButton.addActionListener(e -> controller.calculateResult());
+        plusButton.addActionListener(e -> {
+            flashButton(plusButton, flashColor, flashDuration);
+            controller.handleOperation("+"); // Your existing operation logic
+        });
+        minusButton.addActionListener(e -> {
+            flashButton(minusButton, flashColor, flashDuration);
+            controller.handleOperation("-"); // Your existing operation logic
+        });
+        equalsButton.addActionListener(e -> {
+             flashButton(equalsButton, flashColor, flashDuration);
+            controller.calculateResult(); // Your existing result logic
+        });
     }
 
     /**
@@ -56,23 +81,25 @@ public class CalculatorUI extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         fieldPanel = new javax.swing.JPanel();
         displayField = new javax.swing.JTextField();
         operatorField = new javax.swing.JTextField();
         buttonPanel = new javax.swing.JPanel();
-        zeroButton = new javax.swing.JButton();
-        oneButton = new javax.swing.JButton();
-        twoButton = new javax.swing.JButton();
-        threeButton = new javax.swing.JButton();
-        fourButton = new javax.swing.JButton();
-        fiveButton = new javax.swing.JButton();
-        sixButton = new javax.swing.JButton();
         sevenButton = new javax.swing.JButton();
         eightButton = new javax.swing.JButton();
         nineButton = new javax.swing.JButton();
-        equalsButton = new javax.swing.JButton();
+        fourButton = new javax.swing.JButton();
+        fiveButton = new javax.swing.JButton();
+        sixButton = new javax.swing.JButton();
+        oneButton = new javax.swing.JButton();
+        twoButton = new javax.swing.JButton();
+        threeButton = new javax.swing.JButton();
+        zeroButton = new javax.swing.JButton();
         plusButton = new javax.swing.JButton();
+        equalsButton = new javax.swing.JButton();
+        minusButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -84,6 +111,12 @@ public class CalculatorUI extends javax.swing.JFrame {
         displayField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         displayField.setToolTipText("");
         displayField.setBorder(null);
+        displayField.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        displayField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                displayFieldActionPerformed(evt);
+            }
+        });
         fieldPanel.add(displayField, java.awt.BorderLayout.CENTER);
 
         operatorField.setEditable(false);
@@ -91,96 +124,176 @@ public class CalculatorUI extends javax.swing.JFrame {
         operatorField.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         operatorField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         operatorField.setBorder(null);
-        operatorField.setPreferredSize(new java.awt.Dimension(47, 25));
+        operatorField.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        operatorField.setPreferredSize(new java.awt.Dimension(25, 25));
+        operatorField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                operatorFieldActionPerformed(evt);
+            }
+        });
         fieldPanel.add(operatorField, java.awt.BorderLayout.WEST);
 
-        buttonPanel.setLayout(new java.awt.GridLayout(4, 3, 5, 5));
-
-        zeroButton.setBackground(new java.awt.Color(0, 0, 0));
-        zeroButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        zeroButton.setForeground(new java.awt.Color(255, 255, 255));
-        zeroButton.setText("0");
-        zeroButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(zeroButton);
-
-        oneButton.setBackground(new java.awt.Color(0, 0, 0));
-        oneButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        oneButton.setForeground(new java.awt.Color(255, 255, 255));
-        oneButton.setText("1");
-        oneButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(oneButton);
-
-        twoButton.setBackground(new java.awt.Color(0, 0, 0));
-        twoButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        twoButton.setForeground(new java.awt.Color(255, 255, 255));
-        twoButton.setText("2");
-        twoButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(twoButton);
-
-        threeButton.setBackground(new java.awt.Color(0, 0, 0));
-        threeButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        threeButton.setForeground(new java.awt.Color(255, 255, 255));
-        threeButton.setText("3");
-        threeButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(threeButton);
-
-        fourButton.setBackground(new java.awt.Color(0, 0, 0));
-        fourButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        fourButton.setForeground(new java.awt.Color(255, 255, 255));
-        fourButton.setText("4");
-        fourButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(fourButton);
-
-        fiveButton.setBackground(new java.awt.Color(0, 0, 0));
-        fiveButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        fiveButton.setForeground(new java.awt.Color(255, 255, 255));
-        fiveButton.setText("5");
-        fiveButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(fiveButton);
-
-        sixButton.setBackground(new java.awt.Color(0, 0, 0));
-        sixButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        sixButton.setForeground(new java.awt.Color(255, 255, 255));
-        sixButton.setText("6");
-        sixButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(sixButton);
+        buttonPanel.setLayout(new java.awt.GridBagLayout());
 
         sevenButton.setBackground(new java.awt.Color(0, 0, 0));
         sevenButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         sevenButton.setForeground(new java.awt.Color(255, 255, 255));
         sevenButton.setText("7");
+        sevenButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         sevenButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(sevenButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(sevenButton, gridBagConstraints);
 
         eightButton.setBackground(new java.awt.Color(0, 0, 0));
         eightButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         eightButton.setForeground(new java.awt.Color(255, 255, 255));
         eightButton.setText("8");
+        eightButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         eightButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(eightButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(eightButton, gridBagConstraints);
 
         nineButton.setBackground(new java.awt.Color(0, 0, 0));
         nineButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         nineButton.setForeground(new java.awt.Color(255, 255, 255));
         nineButton.setText("9");
+        nineButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         nineButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(nineButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(nineButton, gridBagConstraints);
 
-        equalsButton.setBackground(new java.awt.Color(0, 0, 0));
-        equalsButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
-        equalsButton.setForeground(new java.awt.Color(255, 255, 255));
-        equalsButton.setText("=");
-        equalsButton.setToolTipText("");
-        equalsButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(equalsButton);
+        fourButton.setBackground(new java.awt.Color(0, 0, 0));
+        fourButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        fourButton.setForeground(new java.awt.Color(255, 255, 255));
+        fourButton.setText("4");
+        fourButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        fourButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(fourButton, gridBagConstraints);
+
+        fiveButton.setBackground(new java.awt.Color(0, 0, 0));
+        fiveButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        fiveButton.setForeground(new java.awt.Color(255, 255, 255));
+        fiveButton.setText("5");
+        fiveButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        fiveButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(fiveButton, gridBagConstraints);
+
+        sixButton.setBackground(new java.awt.Color(0, 0, 0));
+        sixButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        sixButton.setForeground(new java.awt.Color(255, 255, 255));
+        sixButton.setText("6");
+        sixButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        sixButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(sixButton, gridBagConstraints);
+
+        oneButton.setBackground(new java.awt.Color(0, 0, 0));
+        oneButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        oneButton.setForeground(new java.awt.Color(255, 255, 255));
+        oneButton.setText("1");
+        oneButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        oneButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(oneButton, gridBagConstraints);
+
+        twoButton.setBackground(new java.awt.Color(0, 0, 0));
+        twoButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        twoButton.setForeground(new java.awt.Color(255, 255, 255));
+        twoButton.setText("2");
+        twoButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        twoButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(twoButton, gridBagConstraints);
+
+        threeButton.setBackground(new java.awt.Color(0, 0, 0));
+        threeButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        threeButton.setForeground(new java.awt.Color(255, 255, 255));
+        threeButton.setText("3");
+        threeButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        threeButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(threeButton, gridBagConstraints);
+
+        zeroButton.setBackground(new java.awt.Color(0, 0, 0));
+        zeroButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        zeroButton.setForeground(new java.awt.Color(255, 255, 255));
+        zeroButton.setText("0");
+        zeroButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        zeroButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(zeroButton, gridBagConstraints);
 
         plusButton.setBackground(new java.awt.Color(0, 0, 0));
         plusButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
         plusButton.setForeground(new java.awt.Color(255, 255, 255));
         plusButton.setText("+");
         plusButton.setToolTipText("");
+        plusButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         plusButton.setPreferredSize(new java.awt.Dimension(35, 35));
-        buttonPanel.add(plusButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(plusButton, gridBagConstraints);
+
+        equalsButton.setBackground(new java.awt.Color(0, 0, 0));
+        equalsButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        equalsButton.setForeground(new java.awt.Color(255, 255, 255));
+        equalsButton.setText("=");
+        equalsButton.setToolTipText("");
+        equalsButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        equalsButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(equalsButton, gridBagConstraints);
+
+        minusButton.setBackground(new java.awt.Color(0, 0, 0));
+        minusButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        minusButton.setForeground(new java.awt.Color(255, 255, 255));
+        minusButton.setText("-");
+        minusButton.setToolTipText("");
+        minusButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        minusButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(minusButton, gridBagConstraints);
+        minusButton.getAccessibleContext().setAccessibleName("-");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -197,7 +310,7 @@ public class CalculatorUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(fieldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(303, Short.MAX_VALUE))
+                .addContainerGap(305, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -207,6 +320,14 @@ public class CalculatorUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void operatorFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_operatorFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_operatorFieldActionPerformed
+
+    private void displayFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_displayFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,6 +370,7 @@ public class CalculatorUI extends javax.swing.JFrame {
     private javax.swing.JPanel fieldPanel;
     private javax.swing.JButton fiveButton;
     private javax.swing.JButton fourButton;
+    private javax.swing.JButton minusButton;
     private javax.swing.JButton nineButton;
     private javax.swing.JButton oneButton;
     private javax.swing.JTextField operatorField;
