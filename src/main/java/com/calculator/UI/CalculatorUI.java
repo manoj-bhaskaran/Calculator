@@ -81,6 +81,10 @@ private void flashButton(JButton button, Color flashColor, int duration) {
              flashButton(equalsButton, flashColor, flashDuration);
             controller.calculateResult(); // Your existing result logic
         });
+        delButton.addActionListener(e -> {
+            flashButton(equalsButton, flashColor, flashDuration);
+            controller.handleDelete();
+        });
     }
 
     /**
@@ -113,6 +117,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         multiplyButton = new javax.swing.JButton();
         divideButton = new javax.swing.JButton();
         decimalButton = new javax.swing.JButton();
+        delButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -359,6 +364,21 @@ private void flashButton(JButton button, Color flashColor, int duration) {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         buttonPanel.add(decimalButton, gridBagConstraints);
 
+        delButton.setBackground(new java.awt.Color(255, 0, 0));
+        delButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        delButton.setForeground(new java.awt.Color(255, 255, 255));
+        delButton.setText("DEL");
+        delButton.setToolTipText("");
+        delButton.setActionCommand("DEL");
+        delButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        delButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(delButton, gridBagConstraints);
+        delButton.getAccessibleContext().setAccessibleName("DEL");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -437,6 +457,7 @@ private void flashButton(JButton button, Color flashColor, int duration) {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton decimalButton;
+    private javax.swing.JButton delButton;
     private javax.swing.JTextField displayField;
     private javax.swing.JButton divideButton;
     private javax.swing.JButton eightButton;

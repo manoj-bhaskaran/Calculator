@@ -133,4 +133,21 @@ public class CalculatorController {
             lastWasOperator = false;
         }
     }
+    
+    public void handleDelete() {
+        String currentText = displayField.getText();
+
+        // Do nothing if the display contains an operator or single zero
+        if (isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
+            return;
+        }
+
+        // Remove the last character if the display contains more than one character
+        if (currentText.length() > 1) {
+            displayField.setText(currentText.substring(0, currentText.length() - 1));
+        } else {
+            // Reset to "0" if only one character remains
+            displayField.setText("0");
+        }
+    }
 }
