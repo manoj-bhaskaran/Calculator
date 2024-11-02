@@ -3,6 +3,10 @@ package com.calculator.logic;
 import com.calculator.UI.SymbolFormatter;
 import javax.swing.JTextField;
 
+/**
+ * Controller for calculator operations that interacts with the CalculatorLogic
+ * and manages display updates.
+ */
 public class CalculatorController {
 
     private final CalculatorLogic calculatorLogic;
@@ -11,179 +15,197 @@ public class CalculatorController {
     private final JTextField expField;
     private boolean isResultDisplayed = false;
     private boolean isOperatorPending = false;
-    private boolean lastWasOperator = false; // Flag to track if the last entry was an operator
+    private boolean lastWasOperator = false;
 
+    /**
+     * Constructor for CalculatorController. Initializes display fields and
+     * calculator logic.
+     *
+     * @param calculatorLogic the core logic for calculations
+     * @param displayField the field displaying numbers
+     * @param operatorField the field displaying operators
+     * @param expField the field displaying exponents
+     */
     public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField, JTextField expField) {
         this.calculatorLogic = calculatorLogic;
         this.displayField = displayField;
         this.operatorField = operatorField;
         this.expField = expField;
-        displayField.setText("0");  // Initial state display
+        resetDisplay(); // Refactored: separate initial display reset for better readability
+    }
+
+    // Initializes the display fields to starting state
+    private void resetDisplay() {
+        displayField.setText("0");
         operatorField.setText("");
         expField.setText("");
     }
 
+    /**
+     * Appends text to the display, handling constraints like maximum length and
+     * decimal point.
+     *
+     * @param text the text to append to the display
+     */
     public void appendToDisplay(String text) {
-        // Clear "OvFlow" if it is currently displayed and start fresh with new input
-        if ("OvFlow".equals(displayField.getText())) {
-            displayField.setText(""); // Clear the display to accept new input
-            expField.setText(""); // Clear exponent field as well
+        // Reset display if overflow or result already shown
+        if ("OvFlow".equals(displayField.getText()) || isResultDisplayed) {
+            resetDisplay();
         }
 
-        // Allow 15 characters limit per operand
-        if (displayField.getText().length() >= 15 && !isOperatorPending && !isResultDisplayed) {
-            return; // Prevent further input if display is at the limit and not starting a new operand
+        // Enforce a maximum length of 15 characters for input
+        if (displayField.getText().length() >= 15 && !isOperatorPending) {
+            return;
         }
 
-        if (text.equals(".")) {
-            // If decimal is pressed after a result or operator, start fresh with "0."
-            if (isResultDisplayed || isOperatorPending) {
-                displayField.setText("0.");
-                expField.setText(""); // Clear exponent field
-                isResultDisplayed = false;
-                isOperatorPending = false;
-                lastWasOperator = false;
-            } else if (!displayField.getText().contains(".")) {
-                // Only add decimal if current input does not contain one already
-                displayField.setText(displayField.getText() + ".");
-            }
-            return; // End here if decimal is added
+        // Handle decimal input separately to avoid duplicate decimals
+        if (".".equals(text)) {
+            handleDecimalInput();
+            return;
         }
 
-        // For non-decimal input
+        // Handle general input for digits
+        handleGeneralInput(text);
+    }
+
+    // Refactored decimal handling for clarity
+    private void handleDecimalInput() {
         if (isResultDisplayed || isOperatorPending) {
-            // Start new number after result or operator
+            displayField.setText("0.");  // Start new decimal input
+            resetFlags();
+        } else if (!displayField.getText().contains(".")) {
+            displayField.setText(displayField.getText() + ".");
+        }
+    }
+
+    // Refactored general input handling for readability
+    private void handleGeneralInput(String text) {
+        if (isResultDisplayed || isOperatorPending) {
             displayField.setText(text);
-            expField.setText(""); // Clear exponent field
-            isResultDisplayed = false;
-            isOperatorPending = false;
-            lastWasOperator = false;
+            resetFlags();
         } else if ("0".equals(displayField.getText())) {
-            // Replace leading zero unless adding a decimal point
             displayField.setText(text.equals("0") ? "0" : text);
         } else {
-            // Append input as usual
             displayField.setText(displayField.getText() + text);
         }
     }
 
+    // Resets flags to default state after processing input
+    private void resetFlags() {
+        isResultDisplayed = false;
+        isOperatorPending = false;
+        lastWasOperator = false;
+        expField.setText("");
+    }
+
+    /**
+     * Processes an operation input.
+     *
+     * @param operation the operation to handle, such as +, -, *, /
+     */
     public void handleOperation(String operation) {
         if (lastWasOperator) {
-            // Replace the last operator
             calculatorLogic.replaceLastOperator(operation);
-            // Use helper to get the display symbol
+        } else if (!displayField.getText().isEmpty()) {
+            double operand = parseOperandFromFields();
+            calculatorLogic.pushOperand(operand);
+            calculatorLogic.pushOperator(operation);
             operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
-        } else {
-            // If last entry was not an operator, proceed normally
-            if (!displayField.getText().isEmpty()) {
-                double currentOperand;
-                if (!expField.getText().isEmpty()) {
-                    // If there's an exponent, combine display and exponent fields
-                    String combinedValue = displayField.getText() + "E" + expField.getText().substring(1); // Remove "E" symbol
-                    currentOperand = Double.parseDouble(combinedValue);
-                } else {
-                    // No exponent, parse normally
-                    currentOperand = Double.parseDouble(displayField.getText());
-                }
-                calculatorLogic.pushOperand(currentOperand);
-                calculatorLogic.pushOperator(operation);
-                // Use helper to get the display symbol
-                operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
-                isOperatorPending = true;
-                lastWasOperator = true; // Set flag as last was an operator
-            }
+            isOperatorPending = true;
+            lastWasOperator = true;
         }
     }
 
+    // Parses operand from display fields, handling exponents
+    private double parseOperandFromFields() {
+        if (!expField.getText().isEmpty()) {
+            String combinedValue = displayField.getText() + "E" + expField.getText().substring(1);
+            return Double.parseDouble(combinedValue);
+        } else {
+            return Double.parseDouble(displayField.getText());
+        }
+    }
+
+    /**
+     * Calculates and displays the result.
+     */
     public void calculateResult() {
         if (!displayField.getText().isEmpty()) {
-            calculatorLogic.pushOperand(Double.parseDouble(displayField.getText()));
+            calculatorLogic.pushOperand(parseOperandFromFields());
             double result = calculatorLogic.getResult();
 
-            // Define thresholds for underflow and overflow
-            final double underflowThreshold = 1e-13;
-            final double overflowThreshold = 1e15;
-
-            String resultString;
-            String exponentString = "";
-
-            if (Math.abs(result) < underflowThreshold && result != 0) {
-                // Display scientific notation for very small numbers below threshold
-                resultString = String.format("%.13e", result); // Higher precision for exponential format
-                String[] parts = resultString.split("e");
-                resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros from mantissa
-                exponentString = "E" + formatExponent(Integer.parseInt(parts[1])); // Correct exponent format
-                displayField.setText(resultString);
-                expField.setText(exponentString);
-            } else if (Math.abs(result) >= overflowThreshold) {
-                // Display in scientific notation for large numbers
-                resultString = String.format("%.13e", result); // Higher precision for exponent format
-                String[] parts = resultString.split("e");
-                resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros from mantissa
-                exponentString = "E" + formatExponent(Integer.parseInt(parts[1])); // Correct exponent format
-                displayField.setText(resultString);
-                expField.setText(exponentString);
-            } else {
-                // Normal handling for results within threshold
-                if (result == (int) result) {
-                    // Display as integer if result is whole
-                    resultString = Integer.toString((int) result);
-                } else {
-                    // Display with up to 15 characters, rounding as needed
-                    resultString = String.format("%.15f", result)
-                            .replaceAll("0*$", "") // Remove trailing zeros
-                            .replaceAll("\\.$", ""); // Remove trailing decimal point if it exists
-
-                    // Fallback to exponential notation if result doesn't fit 15 characters
-                    if (resultString.length() > 15) {
-                        resultString = String.format("%.13e", result);
-                        String[] parts = resultString.split("e");
-                        resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros again
-                        exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
-                    }
-                }
-                displayField.setText(resultString);
-                expField.setText(exponentString);
-            }
-
-            operatorField.setText("");
-            calculatorLogic.clear();
-            isResultDisplayed = true;
-            lastWasOperator = false;
+            // Display result based on thresholds for underflow and overflow
+            handleResultDisplay(result);
         }
     }
 
-    // Helper method to format the exponent part
+    // Displays result based on underflow and overflow thresholds
+    private void handleResultDisplay(double result) {
+        final double underflowThreshold = 1e-13;
+        final double overflowThreshold = 1e15;
+
+        if (Math.abs(result) < underflowThreshold && result != 0) {
+            formatScientificDisplay(result);
+        } else if (Math.abs(result) >= overflowThreshold) {
+            formatScientificDisplay(result);
+        } else {
+            formatStandardDisplay(result);
+        }
+
+        operatorField.setText("");
+        calculatorLogic.clear();
+        isResultDisplayed = true;
+        lastWasOperator = false;
+    }
+
+    // Handles scientific formatting for display with exponent
+    private void formatScientificDisplay(double result) {
+        String[] parts = String.format("%.13e", result).split("e");
+        displayField.setText(parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""));
+        expField.setText("E" + formatExponent(Integer.parseInt(parts[1])));
+    }
+
+    // Formats standard numbers within 15 characters, defaulting to exponential if too long
+    private void formatStandardDisplay(double result) {
+        String resultString = (result == (int) result) ? Integer.toString((int) result)
+                : String.format("%.15f", result).replaceAll("0*$", "").replaceAll("\\.$", "");
+
+        if (resultString.length() > 15) {
+            formatScientificDisplay(result);
+        } else {
+            displayField.setText(resultString);
+            expField.setText("");
+        }
+    }
+
+    /**
+     * Formats an exponent to three characters with a sign.
+     *
+     * @param exponent the exponent to format
+     * @return formatted exponent string
+     */
     private String formatExponent(int exponent) {
-        // Limits the exponent to three digits plus a sign if necessary
         return String.format("%+d", Math.min(Math.max(exponent, -999), 999));
     }
 
+    /**
+     * Handles backspace/delete functionality, clearing the last character.
+     */
     public void handleDelete() {
         String currentText = displayField.getText();
-
-        // Do nothing if a result is displayed, or if display contains an operator or single zero
         if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
             return;
         }
 
-        // Remove the last character if the display contains more than one character
-        if (currentText.length() > 1) {
-            displayField.setText(currentText.substring(0, currentText.length() - 1));
-        } else {
-            // Reset to "0" if only one character remains
-            displayField.setText("0");
-        }
+        displayField.setText((currentText.length() > 1) ? currentText.substring(0, currentText.length() - 1) : "0");
     }
 
+    /**
+     * Clears all calculator fields and resets the state.
+     */
     public void handleAllClear() {
-        // Clear display fields
-        displayField.setText("0");
-        operatorField.setText("");
-        expField.setText("");  // Ensure exponent field is cleared
-
-        // Reset calculator logic and flags
-        calculatorLogic.clear();  // Assuming clear method resets all stored operands and operators
+        resetDisplay();
+        calculatorLogic.clear();
         isResultDisplayed = false;
         isOperatorPending = false;
         lastWasOperator = false;
