@@ -26,7 +26,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
     public CalculatorUI() {
         initComponents();    
         CalculatorLogic calculatorLogic = new CalculatorLogic();
-        controller = new CalculatorController(calculatorLogic, displayField, operatorField);
+        controller = new CalculatorController(calculatorLogic, displayField, operatorField, expField);
         attachListeners();  // Attach button listeners for UI buttons
         initializeKeyListener();  // Set up KeyListener separately
     }
@@ -164,6 +164,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
         fieldPanel = new javax.swing.JPanel();
         displayField = new javax.swing.JTextField();
         operatorField = new javax.swing.JTextField();
+        expField = new javax.swing.JTextField();
         buttonPanel = new javax.swing.JPanel();
         sevenButton = new javax.swing.JButton();
         eightButton = new javax.swing.JButton();
@@ -195,6 +196,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
         displayField.setToolTipText("");
         displayField.setBorder(null);
         displayField.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        displayField.setPreferredSize(new java.awt.Dimension(65, 25));
         displayField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 displayFieldActionPerformed(evt);
@@ -215,6 +217,20 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
             }
         });
         fieldPanel.add(operatorField, java.awt.BorderLayout.WEST);
+
+        expField.setEditable(false);
+        expField.setBackground(new java.awt.Color(204, 255, 204));
+        expField.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        expField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        expField.setBorder(null);
+        expField.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        expField.setPreferredSize(new java.awt.Dimension(50, 25));
+        expField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expFieldActionPerformed(evt);
+            }
+        });
+        fieldPanel.add(expField, java.awt.BorderLayout.EAST);
 
         buttonPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -459,12 +475,12 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(fieldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(fieldPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 46, Short.MAX_VALUE)
                     .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 47, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,6 +512,10 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
     private void divideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_divideButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_divideButtonActionPerformed
+
+    private void expFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_expFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -535,6 +555,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
     private javax.swing.JButton divideButton;
     private javax.swing.JButton eightButton;
     private javax.swing.JButton equalsButton;
+    private javax.swing.JTextField expField;
     private javax.swing.JPanel fieldPanel;
     private javax.swing.JButton fiveButton;
     private javax.swing.JButton fourButton;
