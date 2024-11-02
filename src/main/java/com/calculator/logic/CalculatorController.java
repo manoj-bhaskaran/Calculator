@@ -76,7 +76,15 @@ public class CalculatorController {
         } else {
             // If last entry was not an operator, proceed normally
             if (!displayField.getText().isEmpty()) {
-                double currentOperand = Double.parseDouble(displayField.getText());
+                double currentOperand;
+                if (!expField.getText().isEmpty()) {
+                    // If there's an exponent, combine display and exponent fields
+                    String combinedValue = displayField.getText() + "E" + expField.getText().substring(1); // Remove "E" symbol
+                    currentOperand = Double.parseDouble(combinedValue);
+                } else {
+                    // No exponent, parse normally
+                    currentOperand = Double.parseDouble(displayField.getText());
+                }
                 calculatorLogic.pushOperand(currentOperand);
                 calculatorLogic.pushOperator(operation);
                 // Use helper to get the display symbol
