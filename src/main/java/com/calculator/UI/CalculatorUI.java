@@ -9,12 +9,14 @@ import com.calculator.logic.CalculatorController;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *
  * @author manoj
  */
-public class CalculatorUI extends javax.swing.JFrame {
+public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
     
     private final CalculatorController controller;
   
@@ -25,19 +27,77 @@ public class CalculatorUI extends javax.swing.JFrame {
         initComponents();    
         CalculatorLogic calculatorLogic = new CalculatorLogic();
         controller = new CalculatorController(calculatorLogic, displayField, operatorField, expField);
-        attachListeners();  // Ensure this is added to enable button functionality
-
+        attachListeners();  // Attach button listeners for UI buttons
+        initializeKeyListener();  // Set up KeyListener separately
     }
     
-private void flashButton(JButton button, Color flashColor, int duration) {
-    Color originalColor = button.getBackground();
-    button.setBackground(flashColor);
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.VK_0, KeyEvent.VK_NUMPAD0 -> zeroButton.doClick();
+            case KeyEvent.VK_1, KeyEvent.VK_NUMPAD1 -> oneButton.doClick();
+            case KeyEvent.VK_2, KeyEvent.VK_NUMPAD2 -> twoButton.doClick();
+            case KeyEvent.VK_3, KeyEvent.VK_NUMPAD3 -> threeButton.doClick();
+            case KeyEvent.VK_4, KeyEvent.VK_NUMPAD4 -> fourButton.doClick();
+            case KeyEvent.VK_5, KeyEvent.VK_NUMPAD5 -> fiveButton.doClick();
+            case KeyEvent.VK_6, KeyEvent.VK_NUMPAD6 -> sixButton.doClick();
+            case KeyEvent.VK_7, KeyEvent.VK_NUMPAD7 -> sevenButton.doClick();
 
-    new javax.swing.Timer(duration, e -> {
-        button.setBackground(originalColor);
-        ((javax.swing.Timer) e.getSource()).stop();
-    }).start();
-}
+            case KeyEvent.VK_8 -> {
+                if (e.isShiftDown()) {
+                    multiplyButton.doClick(); // Handles '*' on the main keyboard (Shift + 8)
+                } else {
+                    eightButton.doClick();    // Regular '8' when Shift is not pressed
+                }
+            }
+            case KeyEvent.VK_NUMPAD8 -> eightButton.doClick();
+            case KeyEvent.VK_9, KeyEvent.VK_NUMPAD9 -> nineButton.doClick();
+            case KeyEvent.VK_PLUS, KeyEvent.VK_ADD -> plusButton.doClick();
+            case KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT -> minusButton.doClick();
+            case KeyEvent.VK_MULTIPLY -> multiplyButton.doClick();
+            case KeyEvent.VK_DIVIDE, KeyEvent.VK_SLASH -> {
+                if (e.isShiftDown()) {
+                    equalsButton.doClick();  // Shift + '/' triggers '?', acting as equals
+                } else {
+                    divideButton.doClick();  // '/' triggers divide
+                }
+            }
+
+            case KeyEvent.VK_ENTER, KeyEvent.VK_EQUALS -> equalsButton.doClick();
+            case KeyEvent.VK_BACK_SPACE, KeyEvent.VK_DELETE -> delButton.doClick(); // Both Backspace and Delete trigger DEL
+            case KeyEvent.VK_ESCAPE -> allClearButton.doClick();
+            case KeyEvent.VK_PERIOD -> decimalButton.doClick();
+
+            // Other keys are ignored
+        }
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // Required by KeyListener but not used
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // Required by KeyListener but not used
+    }
+    
+    private void initializeKeyListener() {
+        this.addKeyListener(this);  // Now safely add KeyListener after constructor finishes
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+    }
+    
+    private void flashButton(JButton button, Color flashColor, int duration) {
+        Color originalColor = button.getBackground();
+        button.setBackground(flashColor);
+
+        new javax.swing.Timer(duration, e -> {
+            button.setBackground(originalColor);
+            ((javax.swing.Timer) e.getSource()).stop();
+        }).start();
+    }
 
     private void attachListeners() {
         Color flashColor = new Color(57, 255, 20);  // Set your custom flash color
@@ -473,15 +533,11 @@ private void flashButton(JButton button, Color flashColor, int duration) {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CalculatorUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CalculatorUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CalculatorUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(CalculatorUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
