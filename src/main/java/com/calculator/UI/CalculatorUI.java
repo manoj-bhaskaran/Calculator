@@ -226,6 +226,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         displayField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         displayField.setToolTipText("");
         displayField.setBorder(null);
+        displayField.setFocusable(false);
         displayField.setMargin(new java.awt.Insets(2, 0, 2, 0));
         displayField.setPreferredSize(new java.awt.Dimension(65, 25));
         displayField.addActionListener(new java.awt.event.ActionListener() {
@@ -240,6 +241,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         operatorField.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         operatorField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         operatorField.setBorder(null);
+        operatorField.setFocusable(false);
         operatorField.setMargin(new java.awt.Insets(2, 0, 2, 0));
         operatorField.setPreferredSize(new java.awt.Dimension(25, 25));
         operatorField.addActionListener(new java.awt.event.ActionListener() {
@@ -254,6 +256,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         expField.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         expField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         expField.setBorder(null);
+        expField.setFocusable(false);
         expField.setMargin(new java.awt.Insets(2, 0, 2, 0));
         expField.setPreferredSize(new java.awt.Dimension(50, 25));
         expField.addActionListener(new java.awt.event.ActionListener() {
