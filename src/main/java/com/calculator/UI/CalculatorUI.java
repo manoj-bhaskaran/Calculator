@@ -117,13 +117,14 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
     }
 
     private void attachListeners() {
-        Color flashColor = new Color(57, 255, 20);  // Set your custom flash color
-        int flashDuration = 100;                    // Set your custom flash duration in milliseconds
+        Color flashColor = new Color(57, 255, 20);  // Custom flash color
+        int flashDuration = 100;                    // Flash duration in milliseconds
 
         ActionListener numberButtonListener = e -> {
             JButton sourceButton = (JButton) e.getSource();
             flashButton(sourceButton, flashColor, flashDuration);
             controller.appendToDisplay(sourceButton.getText());
+            this.requestFocusInWindow(); // Refocus on main window after click
         };
 
         // Array of all number buttons
@@ -139,32 +140,39 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         // Specific action listeners for operations
         plusButton.addActionListener(e -> {
             flashButton(plusButton, flashColor, flashDuration);
-            controller.handleOperation("+"); // Your existing operation logic
+            controller.handleOperation("+");
+            this.requestFocusInWindow(); // Refocus after operation
         });
         minusButton.addActionListener(e -> {
             flashButton(minusButton, flashColor, flashDuration);
-            controller.handleOperation("-"); // Your existing operation logic
+            controller.handleOperation("-");
+            this.requestFocusInWindow();
         });
         multiplyButton.addActionListener(e -> {
             flashButton(multiplyButton, flashColor, flashDuration);
-            controller.handleOperation("*"); // Your existing operation logic
+            controller.handleOperation("*");
+            this.requestFocusInWindow();
         });
         divideButton.addActionListener(e -> {
             flashButton(divideButton, flashColor, flashDuration);
             controller.handleOperation("/");
+            this.requestFocusInWindow();
         });
 
         equalsButton.addActionListener(e -> {
             flashButton(equalsButton, flashColor, flashDuration);
-            controller.calculateResult(); // Your existing result logic
+            controller.calculateResult();
+            this.requestFocusInWindow();
         });
         delButton.addActionListener(e -> {
-            flashButton(equalsButton, flashColor, flashDuration);
+            flashButton(delButton, flashColor, flashDuration); // Corrected button to `delButton`
             controller.handleDelete();
+            this.requestFocusInWindow();
         });
         allClearButton.addActionListener(e -> {
-            flashButton(equalsButton, flashColor, flashDuration);
+            flashButton(allClearButton, flashColor, flashDuration); // Corrected button to `allClearButton`
             controller.handleAllClear();
+            this.requestFocusInWindow();
         });
     }
 
@@ -558,9 +566,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new CalculatorUI().setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> new CalculatorUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
