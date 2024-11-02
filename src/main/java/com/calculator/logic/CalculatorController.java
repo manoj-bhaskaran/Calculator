@@ -8,8 +8,8 @@ import javax.swing.JTextField;
  * and manages display updates.
  */
 public class CalculatorController {
-    
-    private static final String UNDERFLOW_SCIENTIFIC_FORMAT = "%.13e";  // Define a constant for scientific notation format
+
+    private static final String UNDERFLOW_SCIENTIFIC_FORMAT = "%.13e"; // Constant for scientific notation
 
     private final CalculatorLogic calculatorLogic;
     private final JTextField displayField;
@@ -33,7 +33,7 @@ public class CalculatorController {
         this.displayField = displayField;
         this.operatorField = operatorField;
         this.expField = expField;
-        resetDisplay(); // Refactored: separate initial display reset for better readability
+        resetDisplay();
     }
 
     // Initializes the display fields to starting state
@@ -50,37 +50,32 @@ public class CalculatorController {
      * @param text the text to append to the display
      */
     public void appendToDisplay(String text) {
-        // Reset display if overflow or result already shown
         if ("OvFlow".equals(displayField.getText()) || isResultDisplayed) {
             resetDisplay();
         }
 
-        // Enforce a maximum length of 15 characters for input
         if (displayField.getText().length() >= 15 && !isOperatorPending) {
             return;
         }
 
-        // Handle decimal input separately to avoid duplicate decimals
         if (".".equals(text)) {
             handleDecimalInput();
-            return;
+        } else {
+            handleGeneralInput(text);
         }
-
-        // Handle general input for digits
-        handleGeneralInput(text);
     }
 
-    // Refactored decimal handling for clarity
+    // Handles decimal input
     private void handleDecimalInput() {
         if (isResultDisplayed || isOperatorPending) {
-            displayField.setText("0.");  // Start new decimal input
+            displayField.setText("0.");
             resetFlags();
         } else if (!displayField.getText().contains(".")) {
             displayField.setText(displayField.getText() + ".");
         }
     }
 
-    // Refactored general input handling for readability
+    // Handles general digit input
     private void handleGeneralInput(String text) {
         if (isResultDisplayed || isOperatorPending) {
             displayField.setText(text);
@@ -92,7 +87,7 @@ public class CalculatorController {
         }
     }
 
-    // Resets flags to default state after processing input
+    // Resets display-related flags
     private void resetFlags() {
         isResultDisplayed = false;
         isOperatorPending = false;
@@ -136,49 +131,23 @@ public class CalculatorController {
             calculatorLogic.pushOperand(parseOperandFromFields());
             double result = calculatorLogic.getResult();
 
-            // Define thresholds for underflow and overflow
             final double underflowThreshold = 1e-13;
-
             String resultString;
-            String exponentString = "";
 
-            // Check if result is too small for standard display
             if (Math.abs(result) < underflowThreshold && result != 0) {
-                // Display scientific notation for very small numbers
-                resultString = String.format(UNDERFLOW_SCIENTIFIC_FORMAT, result);
-                String[] parts = resultString.split("e");
-                resultString = trimTrailingZeros(parts[0]);
-                exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
-                displayField.setText(resultString);
-                expField.setText(exponentString);
+                resultString = formatToScientific(result);
+                displayResultWithExponent(resultString);
             } else {
-                // Convert result to a plain string for analysis
                 resultString = trimTrailingZeros(String.format("%.15f", result));
                 resultString = removeTrailingDecimalPoint(resultString);
 
-                // Check if exponential notation is needed based on conditions
-                String[] integerAndDecimal = resultString.split("\\.");
-                String integerPart = integerAndDecimal[0];
-
-                if ((integerPart.length() > 15) || (integerPart.equals("0") && integerAndDecimal.length > 1 && integerAndDecimal[1].startsWith("0000000000000"))) {
-                    // Case: Whole number part exceeds 15 digits or leading zeros in decimal part exceed 13
-                    resultString = String.format(UNDERFLOW_SCIENTIFIC_FORMAT, result);
-                    String[] parts = resultString.split("e");
-                    resultString = trimTrailingZeros(parts[0]);
-                    exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
+                if (shouldUseScientificNotation(resultString)) {
+                    resultString = formatToScientific(result);
+                    displayResultWithExponent(resultString);
                 } else {
-                    // Standard display: Round to fit within 15 characters
-                    if (result == (int) result) {
-                        // Display as integer if result is whole
-                        resultString = Integer.toString((int) result);
-                    } else {
-                        resultString = trimTrailingZeros(String.format("%.15f", result));
-                        resultString = removeTrailingDecimalPoint(resultString);
-                    }
+                    displayField.setText(resultString);
+                    expField.setText("");
                 }
-
-                displayField.setText(resultString);
-                expField.setText(exponentString);
             }
 
             operatorField.setText("");
@@ -186,6 +155,25 @@ public class CalculatorController {
             isResultDisplayed = true;
             lastWasOperator = false;
         }
+    }
+
+    // Determines if scientific notation is necessary
+    private boolean shouldUseScientificNotation(String resultString) {
+        String[] integerAndDecimal = resultString.split("\\.");
+        String integerPart = integerAndDecimal[0];
+        return (integerPart.length() > 15 || (integerPart.equals("0") && integerAndDecimal.length > 1 && integerAndDecimal[1].startsWith("0000000000000")));
+    }
+
+    // Formats to scientific notation with constants
+    private String formatToScientific(double value) {
+        return String.format(UNDERFLOW_SCIENTIFIC_FORMAT, value);
+    }
+
+    // Displays formatted result with exponent field
+    private void displayResultWithExponent(String resultString) {
+        String[] parts = resultString.split("e");
+        displayField.setText(trimTrailingZeros(parts[0]));
+        expField.setText("E" + formatExponent(Integer.parseInt(parts[1])));
     }
 
     // Helper function to trim trailing zeros without regex
@@ -199,10 +187,7 @@ public class CalculatorController {
 
     // Helper function to remove trailing decimal point if it exists
     private String removeTrailingDecimalPoint(String value) {
-        if (value.endsWith(".")) {
-            return value.substring(0, value.length() - 1);
-        }
-        return value;
+        return value.endsWith(".") ? value.substring(0, value.length() - 1) : value;
     }
 
     // Helper method to format the exponent part
@@ -211,19 +196,38 @@ public class CalculatorController {
     }
 
     /**
-     * Handles backspace/delete functionality, clearing the last character.
+     * Handles backspace/delete functionality.
      */
     public void handleDelete() {
         String currentText = displayField.getText();
         if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
             return;
         }
-
         displayField.setText((currentText.length() > 1) ? currentText.substring(0, currentText.length() - 1) : "0");
     }
 
     /**
-     * Clears all calculator fields and resets the state.
+     * Toggles the sign of the current number.
+     */
+    public void handleSignChange() {
+        double currentValue = Double.parseDouble(displayField.getText());
+        if (currentValue != 0.0) {
+            currentValue = -currentValue;
+            displayField.setText(formatValue(currentValue));
+        }
+    }
+
+    // Helper method to format the value, reusing existing methods
+    private String formatValue(double value) {
+        if (value == (int) value) {
+            return Integer.toString((int) value);
+        }
+        String valueStr = String.format("%.15f", value);
+        return removeTrailingDecimalPoint(trimTrailingZeros(valueStr));
+    }
+
+    /**
+     * Clears all fields and resets the state.
      */
     public void handleAllClear() {
         resetDisplay();
