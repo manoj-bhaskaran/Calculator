@@ -16,33 +16,41 @@ import java.awt.event.KeyListener;
  *
  * @author manoj
  */
-public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
-    
+public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
+
     private final CalculatorController controller;
-  
+
     /**
      * Creates new form CalculatorUI
      */
     public CalculatorUI() {
-        initComponents();    
+        initComponents();
         CalculatorLogic calculatorLogic = new CalculatorLogic();
         controller = new CalculatorController(calculatorLogic, displayField, operatorField, expField);
         attachListeners();  // Attach button listeners for UI buttons
         initializeKeyListener();  // Set up KeyListener separately
     }
-    
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.VK_0, KeyEvent.VK_NUMPAD0 -> zeroButton.doClick();
-            case KeyEvent.VK_1, KeyEvent.VK_NUMPAD1 -> oneButton.doClick();
-            case KeyEvent.VK_2, KeyEvent.VK_NUMPAD2 -> twoButton.doClick();
-            case KeyEvent.VK_3, KeyEvent.VK_NUMPAD3 -> threeButton.doClick();
-            case KeyEvent.VK_4, KeyEvent.VK_NUMPAD4 -> fourButton.doClick();
-            case KeyEvent.VK_5, KeyEvent.VK_NUMPAD5 -> fiveButton.doClick();
-            case KeyEvent.VK_6, KeyEvent.VK_NUMPAD6 -> sixButton.doClick();
-            case KeyEvent.VK_7, KeyEvent.VK_NUMPAD7 -> sevenButton.doClick();
+            case KeyEvent.VK_0, KeyEvent.VK_NUMPAD0 ->
+                zeroButton.doClick();
+            case KeyEvent.VK_1, KeyEvent.VK_NUMPAD1 ->
+                oneButton.doClick();
+            case KeyEvent.VK_2, KeyEvent.VK_NUMPAD2 ->
+                twoButton.doClick();
+            case KeyEvent.VK_3, KeyEvent.VK_NUMPAD3 ->
+                threeButton.doClick();
+            case KeyEvent.VK_4, KeyEvent.VK_NUMPAD4 ->
+                fourButton.doClick();
+            case KeyEvent.VK_5, KeyEvent.VK_NUMPAD5 ->
+                fiveButton.doClick();
+            case KeyEvent.VK_6, KeyEvent.VK_NUMPAD6 ->
+                sixButton.doClick();
+            case KeyEvent.VK_7, KeyEvent.VK_NUMPAD7 ->
+                sevenButton.doClick();
 
             case KeyEvent.VK_8 -> {
                 if (e.isShiftDown()) {
@@ -51,11 +59,16 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
                     eightButton.doClick();    // Regular '8' when Shift is not pressed
                 }
             }
-            case KeyEvent.VK_NUMPAD8 -> eightButton.doClick();
-            case KeyEvent.VK_9, KeyEvent.VK_NUMPAD9 -> nineButton.doClick();
-            case KeyEvent.VK_PLUS, KeyEvent.VK_ADD -> plusButton.doClick();
-            case KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT -> minusButton.doClick();
-            case KeyEvent.VK_MULTIPLY -> multiplyButton.doClick();
+            case KeyEvent.VK_NUMPAD8 ->
+                eightButton.doClick();
+            case KeyEvent.VK_9, KeyEvent.VK_NUMPAD9 ->
+                nineButton.doClick();
+            case KeyEvent.VK_PLUS, KeyEvent.VK_ADD ->
+                plusButton.doClick();
+            case KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT ->
+                minusButton.doClick();
+            case KeyEvent.VK_MULTIPLY ->
+                multiplyButton.doClick();
             case KeyEvent.VK_DIVIDE, KeyEvent.VK_SLASH -> {
                 if (e.isShiftDown()) {
                     equalsButton.doClick();  // Shift + '/' triggers '?', acting as equals
@@ -64,15 +77,19 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
                 }
             }
 
-            case KeyEvent.VK_ENTER, KeyEvent.VK_EQUALS -> equalsButton.doClick();
-            case KeyEvent.VK_BACK_SPACE, KeyEvent.VK_DELETE -> delButton.doClick(); // Both Backspace and Delete trigger DEL
-            case KeyEvent.VK_ESCAPE -> allClearButton.doClick();
-            case KeyEvent.VK_PERIOD -> decimalButton.doClick();
+            case KeyEvent.VK_ENTER, KeyEvent.VK_EQUALS ->
+                equalsButton.doClick();
+            case KeyEvent.VK_BACK_SPACE, KeyEvent.VK_DELETE ->
+                delButton.doClick(); // Both Backspace and Delete trigger DEL
+            case KeyEvent.VK_ESCAPE ->
+                allClearButton.doClick();
+            case KeyEvent.VK_PERIOD ->
+                decimalButton.doClick();
 
             // Other keys are ignored
         }
     }
-    
+
     @Override
     public void keyReleased(KeyEvent e) {
         // Required by KeyListener but not used
@@ -82,13 +99,13 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
     public void keyTyped(KeyEvent e) {
         // Required by KeyListener but not used
     }
-    
+
     private void initializeKeyListener() {
         this.addKeyListener(this);  // Now safely add KeyListener after constructor finishes
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
-    
+
     private void flashButton(JButton button, Color flashColor, int duration) {
         Color originalColor = button.getBackground();
         button.setBackground(flashColor);
@@ -111,8 +128,8 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
 
         // Array of all number buttons
         JButton[] numberButtons = {zeroButton, oneButton, twoButton, threeButton, fourButton,
-                                   fiveButton, sixButton, sevenButton, eightButton, nineButton,
-                                   decimalButton};
+            fiveButton, sixButton, sevenButton, eightButton, nineButton,
+            decimalButton};
 
         // Add action listener to each number button
         for (JButton button : numberButtons) {
@@ -133,12 +150,12 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
             controller.handleOperation("*"); // Your existing operation logic
         });
         divideButton.addActionListener(e -> {
-            flashButton(divideButton, flashColor, flashDuration); 
+            flashButton(divideButton, flashColor, flashDuration);
             controller.handleOperation("/");
         });
 
         equalsButton.addActionListener(e -> {
-             flashButton(equalsButton, flashColor, flashDuration);
+            flashButton(equalsButton, flashColor, flashDuration);
             controller.calculateResult(); // Your existing result logic
         });
         delButton.addActionListener(e -> {
@@ -537,7 +554,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener{
             java.util.logging.Logger.getLogger(CalculatorUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
