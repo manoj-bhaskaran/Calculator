@@ -106,12 +106,18 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         this.requestFocusInWindow();
     }
 
+    private boolean isFlashing = false;
+
     private void flashButton(JButton button, Color flashColor, int duration) {
+        if (isFlashing) return; // Skip if flash is already in progress
+        isFlashing = true;
+
         Color originalColor = button.getBackground();
         button.setBackground(flashColor);
 
         new javax.swing.Timer(duration, e -> {
             button.setBackground(originalColor);
+            isFlashing = false; // Reset flash flag when done
             ((javax.swing.Timer) e.getSource()).stop();
         }).start();
     }
