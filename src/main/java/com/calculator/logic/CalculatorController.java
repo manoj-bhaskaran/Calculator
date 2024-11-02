@@ -8,22 +8,28 @@ public class CalculatorController {
     private final CalculatorLogic calculatorLogic;
     private final JTextField displayField;
     private final JTextField operatorField;
+    private final JTextField expField;
     private boolean isResultDisplayed = false;
     private boolean isOperatorPending = false;
     private boolean lastWasOperator = false; // Flag to track if the last entry was an operator
 
-    public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField) {
+    public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField, JTextField expField) {
         this.calculatorLogic = calculatorLogic;
         this.displayField = displayField;
         this.operatorField = operatorField;
+        this.expField = expField;
         displayField.setText("0");  // Initial state display
+        operatorField.setText("");
+        expField.setText("");
     }
 
     public void appendToDisplay(String text) {
         // Clear "OvFlow" if it is currently displayed and start fresh with new input
         if ("OvFlow".equals(displayField.getText())) {
             displayField.setText(""); // Clear the display to accept new input
+            expField.setText(""); // Clear exponent field as well
         }
+
         // Allow 15 characters limit per operand
         if (displayField.getText().length() >= 15 && !isOperatorPending && !isResultDisplayed) {
             return; // Prevent further input if display is at the limit and not starting a new operand
@@ -33,6 +39,7 @@ public class CalculatorController {
             // If decimal is pressed after a result or operator, start fresh with "0."
             if (isResultDisplayed || isOperatorPending) {
                 displayField.setText("0.");
+                expField.setText(""); // Clear exponent field
                 isResultDisplayed = false;
                 isOperatorPending = false;
                 lastWasOperator = false;
@@ -47,6 +54,7 @@ public class CalculatorController {
         if (isResultDisplayed || isOperatorPending) {
             // Start new number after result or operator
             displayField.setText(text);
+            expField.setText(""); // Clear exponent field
             isResultDisplayed = false;
             isOperatorPending = false;
             lastWasOperator = false;
@@ -84,44 +92,50 @@ public class CalculatorController {
             calculatorLogic.pushOperand(Double.parseDouble(displayField.getText()));
             double result = calculatorLogic.getResult();
 
-            // Define a threshold for underflow: smaller values will be displayed as "UndFlow"
-            final double underflowThreshold = 1e-13; // Adjust as needed to fit 13 zeros for the display
+            // Define thresholds for underflow and overflow
+            final double underflowThreshold = 1e-13;
+            final double overflowThreshold = 1e15;
 
-            // Check for underflow: very small numbers below threshold will be shown as "UndFlow"
+            String resultString;
+            String exponentString = "";
+
             if (Math.abs(result) < underflowThreshold && result != 0) {
-                displayField.setText("UndFlow");
+                // Display scientific notation for very small numbers below threshold
+                resultString = String.format("%.13e", result); // Higher precision for exponential format
+                String[] parts = resultString.split("e");
+                resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros from mantissa
+                exponentString = "E" + formatExponent(Integer.parseInt(parts[1])); // Correct exponent format
+                displayField.setText(resultString);
+                expField.setText(exponentString);
+            } else if (Math.abs(result) >= overflowThreshold) {
+                // Display in scientific notation for large numbers
+                resultString = String.format("%.13e", result); // Higher precision for exponent format
+                String[] parts = resultString.split("e");
+                resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros from mantissa
+                exponentString = "E" + formatExponent(Integer.parseInt(parts[1])); // Correct exponent format
+                displayField.setText(resultString);
+                expField.setText(exponentString);
             } else {
-                String resultString;
+                // Normal handling for results within threshold
                 if (result == (int) result) {
-                    // If the result is an integer, display without decimal places
+                    // Display as integer if result is whole
                     resultString = Integer.toString((int) result);
                 } else {
-                    // Convert result to string, limiting to 15 significant characters
+                    // Display with up to 15 characters, rounding as needed
                     resultString = String.format("%.15f", result)
-                        .replaceAll("0*$", "") // Trim trailing zeros
-                        .replaceAll("\\.$", ""); // Remove trailing decimal point if exists
+                        .replaceAll("0*$", "") // Remove trailing zeros
+                        .replaceAll("\\.$", ""); // Remove trailing decimal point if it exists
 
-                    // Ensure result fits within 15 characters, handling overflow
-                    int maxWholeDigits = result < 0 ? 14 : 15; // Adjust for negative sign if needed
-                    int wholeDigits = resultString.contains(".") ? resultString.indexOf('.') : resultString.length();
-
-                    if (wholeDigits > maxWholeDigits) {
-                        displayField.setText("OvFlow");
-                        return;
-                    } else if (resultString.length() > 15) {
-                        int decimalPlaces = 15 - wholeDigits - 1;
-                        resultString = String.format("%." + decimalPlaces + "f", result)
-                            .replaceAll("0*$", "").replaceAll("\\.$", "");
-
-                        if (resultString.length() > 15) {
-                            displayField.setText("OvFlow");
-                            return;
-                        }
+                    // Fallback to exponential notation if result doesn't fit 15 characters
+                    if (resultString.length() > 15) {
+                        resultString = String.format("%.13e", result);
+                        String[] parts = resultString.split("e");
+                        resultString = parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""); // Trim trailing zeros again
+                        exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
                     }
                 }
-
-                // Display the formatted result
                 displayField.setText(resultString);
+                expField.setText(exponentString);
             }
 
             operatorField.setText("");
@@ -129,6 +143,12 @@ public class CalculatorController {
             isResultDisplayed = true;
             lastWasOperator = false;
         }
+    }
+
+    // Helper method to format the exponent part
+    private String formatExponent(int exponent) {
+        // Limits the exponent to three digits plus a sign if necessary
+        return String.format("%+d", Math.min(Math.max(exponent, -999), 999));
     }
     
     public void handleDelete() {
@@ -152,6 +172,7 @@ public class CalculatorController {
         // Clear display fields
         displayField.setText("0");
         operatorField.setText("");
+        expField.setText("");  // Ensure exponent field is cleared
         
         // Reset calculator logic and flags
         calculatorLogic.clear();  // Assuming clear method resets all stored operands and operators
