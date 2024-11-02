@@ -146,11 +146,40 @@ public class CalculatorController {
     }
 
     private String trimTrailingZeros(String value) {
-        int i = value.length() - 1;
-        while (i > 0 && value.charAt(i) == '0') {
-            i--;
+        // Check if value is in exponential form
+        int eIndex = value.indexOf('E');
+        
+        if (eIndex == -1) {
+            eIndex = value.indexOf('e');
         }
-        return value.substring(0, i + 1);
+
+        if (eIndex == -1) {
+            // If not in exponential form, trim as usual
+            int i = value.length() - 1;
+            while (i > 0 && value.charAt(i) == '0') {
+                i--;
+            }
+            return value.substring(0, i + 1);
+        } else {
+            // If in exponential form, separate mantissa and exponent
+            String mantissa = value.substring(0, eIndex);
+            String exponent = value.substring(eIndex);
+
+            // Trim trailing zeros from mantissa
+            int i = mantissa.length() - 1;
+            while (i > 0 && mantissa.charAt(i) == '0') {
+                i--;
+            }
+            mantissa = mantissa.substring(0, i + 1);
+
+            // Ensure no trailing decimal point in mantissa
+            if (mantissa.endsWith(".")) {
+                mantissa = mantissa.substring(0, mantissa.length() - 1);
+            }
+
+            // Reassemble mantissa and exponent
+            return mantissa + exponent;
+        }
     }
 
     private String removeTrailingDecimalPoint(String value) {
