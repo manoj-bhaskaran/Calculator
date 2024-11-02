@@ -18,6 +18,7 @@ public class CalculatorController {
     private boolean isResultDisplayed = false;
     private boolean isOperatorPending = false;
     private boolean lastWasOperator = false;
+    private boolean isExponentMode = false;  // New flag to track if EXP mode is active
 
     public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField, JTextField expField) {
         this.calculatorLogic = calculatorLogic;
@@ -42,6 +43,16 @@ public class CalculatorController {
             return;
         }
 
+        if (isExponentMode) {
+            // Ignore decimal points in exponent or if length of exponent exceeds 3
+            if (".".equals(text) || expField.getText().length() >= 5) {
+                return;
+            } else {
+                handleExponentInput(text);
+                return;
+            }
+        } 
+        
         if (".".equals(text)) {
             handleDecimalInput();
         } else {
@@ -68,12 +79,28 @@ public class CalculatorController {
             displayField.setText(displayField.getText() + text);
         }
     }
+    
+    private void handleExponentInput(String text) {
+        if ("E+0".equals(expField.getText())) {
+            expField.setText(text.equals("0") ? "E+0" : "E+" + text);
+        } else {
+            expField.setText(expField.getText() + text);
+        }
+    }
 
     private void resetFlags() {
         isResultDisplayed = false;
         isOperatorPending = false;
         lastWasOperator = false;
         expField.setText("");
+        isExponentMode = false;
+    }
+    
+    public void handleExp() {
+        if (!isExponentMode && !isResultDisplayed && !isOperatorPending) {
+            expField.setText("E+0"); // Add 'E' to enter exponent mode
+            isExponentMode = true;
+        }
     }
 
     public void handleOperation(String operation) {
@@ -86,6 +113,7 @@ public class CalculatorController {
             operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
             isOperatorPending = true;
             lastWasOperator = true;
+            isExponentMode = false;
         }
     }
 
@@ -125,6 +153,7 @@ public class CalculatorController {
             calculatorLogic.clear();
             isResultDisplayed = true;
             lastWasOperator = false;
+            isExponentMode = false;
         }
     }
 
@@ -191,18 +220,30 @@ public class CalculatorController {
     }
 
     public void handleDelete() {
-        String currentText = displayField.getText();
-        if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
-            return;
+        if (isExponentMode) {
+            String currentText = expField.getText();
+            if ("E+0".equals(currentText)) {
+                    return;
+            }
+            expField.setText((currentText.length() > 3) ? currentText.substring(0,currentText.length()-1) : "E+0");
+        } else {
+            String currentText = displayField.getText();
+            if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
+                return;
+            }
+            displayField.setText((currentText.length() > 1) ? currentText.substring(0, currentText.length() - 1) : "0");
         }
-        displayField.setText((currentText.length() > 1) ? currentText.substring(0, currentText.length() - 1) : "0");
     }
 
     public void handleSignChange() {
-        double currentValue = Double.parseDouble(displayField.getText());
-        if (currentValue != 0.0) {
-            currentValue = -currentValue;
-            displayField.setText(formatForStandardDisplay(currentValue));
+        if (isExponentMode) {
+            expField.setText("E" + String.format("%+d", -Integer.valueOf(expField.getText().substring(1))));
+        } else {
+            double currentValue = Double.parseDouble(displayField.getText());
+            if (currentValue != 0.0) {
+                currentValue = -currentValue;
+                displayField.setText(formatForStandardDisplay(currentValue));
+            }
         }
     }
 
@@ -220,5 +261,6 @@ public class CalculatorController {
         isResultDisplayed = false;
         isOperatorPending = false;
         lastWasOperator = false;
+        isExponentMode = false;
     }
 }

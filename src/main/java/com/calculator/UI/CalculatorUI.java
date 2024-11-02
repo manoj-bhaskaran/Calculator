@@ -87,6 +87,8 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
                 decimalButton.doClick();
             case KeyEvent.VK_P, KeyEvent.VK_N ->
                 signChangeButton.doClick();
+            case KeyEvent.VK_E ->
+                expButton.doClick();
 
             // Other keys are ignored
         }
@@ -182,6 +184,12 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         signChangeButton.addActionListener(e -> {
             flashButton(signChangeButton, flashColor, flashDuration);
             controller.handleSignChange();
+            this.requestFocusInWindow();
+        });
+        expButton.addActionListener(e -> {
+            flashButton(expButton, flashColor, flashDuration);
+            controller.handleExp();
+            this.requestFocusInWindow();
         });
         allClearButton.addActionListener(e -> {
             flashButton(allClearButton, flashColor, flashDuration); // Corrected button to `allClearButton`
@@ -224,6 +232,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         delButton = new javax.swing.JButton();
         allClearButton = new javax.swing.JButton();
         signChangeButton = new javax.swing.JButton();
+        expButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -534,6 +543,20 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         buttonPanel.add(signChangeButton, gridBagConstraints);
         signChangeButton.getAccessibleContext().setAccessibleName("\u00B1");
 
+        expButton.setBackground(new java.awt.Color(0, 0, 0));
+        expButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        expButton.setForeground(new java.awt.Color(255, 255, 255));
+        expButton.setText("EXP");
+        expButton.setToolTipText("");
+        expButton.setActionCommand("EXP");
+        expButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        expButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(expButton, gridBagConstraints);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -620,6 +643,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
     private javax.swing.JButton divideButton;
     private javax.swing.JButton eightButton;
     private javax.swing.JButton equalsButton;
+    private javax.swing.JButton expButton;
     private javax.swing.JTextField expField;
     private javax.swing.JPanel fieldPanel;
     private javax.swing.JButton fiveButton;
