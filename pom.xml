@@ -10,6 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>22</maven.compiler.release>
         <exec.mainClass>com.calculator.Calculator</exec.mainClass>
     </properties>
 
@@ -19,10 +20,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version> <!-- Use the latest stable version -->
                 <configuration>
-                    <source>22</source>
-                    <target>22</target>
+                    <release>22</release> <!-- Use release to specify Java version -->
                 </configuration>
             </plugin>
         </plugins>
