@@ -12,6 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>22</maven.compiler.release>
         <exec.mainClass>com.calculator.Calculator</exec.mainClass>
+        <sonar.projectKey>manoj-bhaskaran-Calculator</sonar.projectKey>
+        <sonar.organization>manoj-bhaskaran</sonar.organization>
     </properties>
 
     <build>
