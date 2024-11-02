@@ -8,6 +8,8 @@ import javax.swing.JTextField;
  * and manages display updates.
  */
 public class CalculatorController {
+    
+    private static final String UNDERFLOW_SCIENTIFIC_FORMAT = "%.13e";  // Define a constant for scientific notation format
 
     private final CalculatorLogic calculatorLogic;
     private final JTextField displayField;
@@ -134,56 +136,76 @@ public class CalculatorController {
             calculatorLogic.pushOperand(parseOperandFromFields());
             double result = calculatorLogic.getResult();
 
-            // Display result based on thresholds for underflow and overflow
-            handleResultDisplay(result);
+            // Define thresholds for underflow and overflow
+            final double underflowThreshold = 1e-13;
+
+            String resultString;
+            String exponentString = "";
+
+            // Check if result is too small for standard display
+            if (Math.abs(result) < underflowThreshold && result != 0) {
+                // Display scientific notation for very small numbers
+                resultString = String.format(UNDERFLOW_SCIENTIFIC_FORMAT, result);
+                String[] parts = resultString.split("e");
+                resultString = trimTrailingZeros(parts[0]);
+                exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
+                displayField.setText(resultString);
+                expField.setText(exponentString);
+            } else {
+                // Convert result to a plain string for analysis
+                resultString = trimTrailingZeros(String.format("%.15f", result));
+                resultString = removeTrailingDecimalPoint(resultString);
+
+                // Check if exponential notation is needed based on conditions
+                String[] integerAndDecimal = resultString.split("\\.");
+                String integerPart = integerAndDecimal[0];
+
+                if ((integerPart.length() > 15) || (integerPart.equals("0") && integerAndDecimal.length > 1 && integerAndDecimal[1].startsWith("0000000000000"))) {
+                    // Case: Whole number part exceeds 15 digits or leading zeros in decimal part exceed 13
+                    resultString = String.format(UNDERFLOW_SCIENTIFIC_FORMAT, result);
+                    String[] parts = resultString.split("e");
+                    resultString = trimTrailingZeros(parts[0]);
+                    exponentString = "E" + formatExponent(Integer.parseInt(parts[1]));
+                } else {
+                    // Standard display: Round to fit within 15 characters
+                    if (result == (int) result) {
+                        // Display as integer if result is whole
+                        resultString = Integer.toString((int) result);
+                    } else {
+                        resultString = trimTrailingZeros(String.format("%.15f", result));
+                        resultString = removeTrailingDecimalPoint(resultString);
+                    }
+                }
+
+                displayField.setText(resultString);
+                expField.setText(exponentString);
+            }
+
+            operatorField.setText("");
+            calculatorLogic.clear();
+            isResultDisplayed = true;
+            lastWasOperator = false;
         }
     }
 
-    // Displays result based on underflow and overflow thresholds
-    private void handleResultDisplay(double result) {
-        final double underflowThreshold = 1e-13;
-        final double overflowThreshold = 1e15;
-
-        if (Math.abs(result) < underflowThreshold && result != 0) {
-            formatScientificDisplay(result);
-        } else if (Math.abs(result) >= overflowThreshold) {
-            formatScientificDisplay(result);
-        } else {
-            formatStandardDisplay(result);
+    // Helper function to trim trailing zeros without regex
+    private String trimTrailingZeros(String value) {
+        int i = value.length() - 1;
+        while (i > 0 && value.charAt(i) == '0') {
+            i--;
         }
-
-        operatorField.setText("");
-        calculatorLogic.clear();
-        isResultDisplayed = true;
-        lastWasOperator = false;
+        return value.substring(0, i + 1);
     }
 
-    // Handles scientific formatting for display with exponent
-    private void formatScientificDisplay(double result) {
-        String[] parts = String.format("%.13e", result).split("e");
-        displayField.setText(parts[0].replaceAll("0*$", "").replaceAll("\\.$", ""));
-        expField.setText("E" + formatExponent(Integer.parseInt(parts[1])));
-    }
-
-    // Formats standard numbers within 15 characters, defaulting to exponential if too long
-    private void formatStandardDisplay(double result) {
-        String resultString = (result == (int) result) ? Integer.toString((int) result)
-                : String.format("%.15f", result).replaceAll("0*$", "").replaceAll("\\.$", "");
-
-        if (resultString.length() > 15) {
-            formatScientificDisplay(result);
-        } else {
-            displayField.setText(resultString);
-            expField.setText("");
+    // Helper function to remove trailing decimal point if it exists
+    private String removeTrailingDecimalPoint(String value) {
+        if (value.endsWith(".")) {
+            return value.substring(0, value.length() - 1);
         }
+        return value;
     }
 
-    /**
-     * Formats an exponent to three characters with a sign.
-     *
-     * @param exponent the exponent to format
-     * @return formatted exponent string
-     */
+    // Helper method to format the exponent part
     private String formatExponent(int exponent) {
         return String.format("%+d", Math.min(Math.max(exponent, -999), 999));
     }
