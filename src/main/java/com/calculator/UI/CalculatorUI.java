@@ -85,6 +85,8 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
                 allClearButton.doClick();
             case KeyEvent.VK_PERIOD ->
                 decimalButton.doClick();
+            case KeyEvent.VK_P, KeyEvent.VK_N ->
+                signChangeButton.doClick();
 
             // Other keys are ignored
         }
@@ -109,7 +111,9 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
     private boolean isFlashing = false;
 
     private void flashButton(JButton button, Color flashColor, int duration) {
-        if (isFlashing) return; // Skip if flash is already in progress
+        if (isFlashing) {
+            return; // Skip if flash is already in progress
+        }
         isFlashing = true;
 
         Color originalColor = button.getBackground();
@@ -175,6 +179,10 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
             controller.handleDelete();
             this.requestFocusInWindow();
         });
+        signChangeButton.addActionListener(e -> {
+            flashButton(signChangeButton, flashColor, flashDuration);
+            controller.handleSignChange();
+        });
         allClearButton.addActionListener(e -> {
             flashButton(allClearButton, flashColor, flashDuration); // Corrected button to `allClearButton`
             controller.handleAllClear();
@@ -215,6 +223,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         decimalButton = new javax.swing.JButton();
         delButton = new javax.swing.JButton();
         allClearButton = new javax.swing.JButton();
+        signChangeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -505,6 +514,26 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         buttonPanel.add(allClearButton, gridBagConstraints);
 
+        signChangeButton.setBackground(new java.awt.Color(0, 0, 0));
+        signChangeButton.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
+        signChangeButton.setForeground(new java.awt.Color(255, 255, 255));
+        signChangeButton.setText("\u00B1");
+        signChangeButton.setToolTipText("");
+        signChangeButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        signChangeButton.setLabel("\u00B1");
+        signChangeButton.setPreferredSize(new java.awt.Dimension(35, 35));
+        signChangeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signChangeButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        buttonPanel.add(signChangeButton, gridBagConstraints);
+        signChangeButton.getAccessibleContext().setAccessibleName("\u00B1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -550,6 +579,10 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
     private void expFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_expFieldActionPerformed
+
+    private void signChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signChangeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_signChangeButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -598,6 +631,7 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
     private javax.swing.JTextField operatorField;
     private javax.swing.JButton plusButton;
     private javax.swing.JButton sevenButton;
+    private javax.swing.JButton signChangeButton;
     private javax.swing.JButton sixButton;
     private javax.swing.JButton threeButton;
     private javax.swing.JButton twoButton;
