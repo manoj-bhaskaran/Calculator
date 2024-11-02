@@ -123,8 +123,8 @@ public class CalculatorController {
                 } else {
                     // Display with up to 15 characters, rounding as needed
                     resultString = String.format("%.15f", result)
-                        .replaceAll("0*$", "") // Remove trailing zeros
-                        .replaceAll("\\.$", ""); // Remove trailing decimal point if it exists
+                            .replaceAll("0*$", "") // Remove trailing zeros
+                            .replaceAll("\\.$", ""); // Remove trailing decimal point if it exists
 
                     // Fallback to exponential notation if result doesn't fit 15 characters
                     if (resultString.length() > 15) {
@@ -150,7 +150,7 @@ public class CalculatorController {
         // Limits the exponent to three digits plus a sign if necessary
         return String.format("%+d", Math.min(Math.max(exponent, -999), 999));
     }
-    
+
     public void handleDelete() {
         String currentText = displayField.getText();
 
@@ -167,13 +167,13 @@ public class CalculatorController {
             displayField.setText("0");
         }
     }
-    
-    public void handleAllClear () {
+
+    public void handleAllClear() {
         // Clear display fields
         displayField.setText("0");
         operatorField.setText("");
         expField.setText("");  // Ensure exponent field is cleared
-        
+
         // Reset calculator logic and flags
         calculatorLogic.clear();  // Assuming clear method resets all stored operands and operators
         isResultDisplayed = false;
