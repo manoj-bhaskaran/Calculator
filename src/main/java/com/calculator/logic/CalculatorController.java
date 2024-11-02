@@ -134,8 +134,8 @@ public class CalculatorController {
     public void handleDelete() {
         String currentText = displayField.getText();
 
-        // Do nothing if the display contains an operator or single zero
-        if (isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
+        // Do nothing if a result is displayed, or if display contains an operator or single zero
+        if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
             return;
         }
 
