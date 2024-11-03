@@ -40,4 +40,5 @@ jobs:
           mvn clean verify sonar:sonar \
           -Dsonar.projectKey=manoj-bhaskaran_Calculator \
           -Dsonar.organization=manoj-bhaskaran \
-          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_TOKEN
