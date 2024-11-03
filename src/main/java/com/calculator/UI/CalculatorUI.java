@@ -6,11 +6,12 @@ package com.calculator.UI;
 
 import com.calculator.logic.CalculatorLogic;
 import com.calculator.logic.CalculatorController;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Clipboard;
+import java.awt.event.*;
+import java.awt.Toolkit;
+import javax.swing.*;
 
 /**
  *
@@ -24,11 +25,13 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
      * Creates new form CalculatorUI
      */
     public CalculatorUI() {
+
         initComponents();
         CalculatorLogic calculatorLogic = new CalculatorLogic();
         controller = new CalculatorController(calculatorLogic, displayField, operatorField, expField);
         attachListeners();  // Attach button listeners for UI buttons
         initializeKeyListener();  // Set up KeyListener separately
+        initializeCopyMenu();
     }
 
     @Override
@@ -196,6 +199,25 @@ public class CalculatorUI extends javax.swing.JFrame implements KeyListener {
             controller.handleAllClear();
             this.requestFocusInWindow();
         });
+    }
+    
+    void initializeCopyMenu() {
+        // Add the right-click copy functionality to the displayField
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem copyItem = new JMenuItem("Copy");
+        
+        copyItem.addActionListener(e -> {
+            String displayText = displayField.getText();
+            String expText = expField.getText();
+            String copyText = expText.isEmpty() ? displayText : displayText + expText;
+
+            // Copy to clipboard
+            StringSelection stringSelection = new StringSelection(copyText);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        });
+        popupMenu.add(copyItem);
+        displayField.setComponentPopupMenu(popupMenu);  // Attach popup to displayField
     }
 
     /**
