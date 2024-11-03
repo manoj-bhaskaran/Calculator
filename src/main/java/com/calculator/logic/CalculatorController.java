@@ -4,12 +4,14 @@ import com.calculator.UI.SymbolFormatter;
 import javax.swing.JTextField;
 
 /**
- * Controller for calculator operations that interacts with the CalculatorLogic
- * and manages display updates.
+ * Controller for calculator operations that interacts with CalculatorLogic and
+ * manages display updates. Supports handling various operations, displaying
+ * results, and toggling number signs.
  */
 public class CalculatorController {
 
-    private static final String SCIENTIFIC_FORMAT = "%.13e"; // Constant for scientific notation
+    private static final String SCIENTIFIC_FORMAT = "%.13e";  // Constant for scientific notation format
+    private static final int DISPLAY_MAX_LENGTH = 15; // Max display length for mantissa
 
     private final CalculatorLogic calculatorLogic;
     private final JTextField displayField;
@@ -18,8 +20,16 @@ public class CalculatorController {
     private boolean isResultDisplayed = false;
     private boolean isOperatorPending = false;
     private boolean lastWasOperator = false;
-    private boolean isExponentMode = false;  // New flag to track if EXP mode is active
+    private boolean isExponentMode = false;  // Flag for exponent entry mode
 
+    /**
+     * Initializes display fields and calculator logic.
+     *
+     * @param calculatorLogic the core logic for calculations
+     * @param displayField the field displaying numbers
+     * @param operatorField the field displaying operators
+     * @param expField the field displaying exponents
+     */
     public CalculatorController(CalculatorLogic calculatorLogic, JTextField displayField, JTextField operatorField, JTextField expField) {
         this.calculatorLogic = calculatorLogic;
         this.displayField = displayField;
@@ -28,32 +38,34 @@ public class CalculatorController {
         resetDisplay();
     }
 
+    /**
+     * Resets display fields and flags to their default state.
+     */
     private void resetDisplay() {
         displayField.setText("0");
         operatorField.setText("");
         expField.setText("");
+        resetFlags();
     }
 
+    /**
+     * Appends text to the display, managing constraints like max length,
+     * decimal points, and exponent mode.
+     *
+     * @param text the text to append to the display
+     */
     public void appendToDisplay(String text) {
         if ("OvFlow".equals(displayField.getText()) || isResultDisplayed) {
             resetDisplay();
         }
 
-        if (displayField.getText().length() >= 15 && !isOperatorPending) {
+        if (displayField.getText().length() >= DISPLAY_MAX_LENGTH && !isOperatorPending) {
             return;
         }
 
         if (isExponentMode) {
-            // Ignore decimal points in exponent or if length of exponent exceeds 3
-            if (".".equals(text) || expField.getText().length() >= 5) {
-                return;
-            } else {
-                handleExponentInput(text);
-                return;
-            }
-        } 
-        
-        if (".".equals(text)) {
+            handleExponentInput(text);
+        } else if (".".equals(text)) {
             handleDecimalInput();
         } else {
             handleGeneralInput(text);
@@ -79,11 +91,11 @@ public class CalculatorController {
             displayField.setText(displayField.getText() + text);
         }
     }
-    
+
     private void handleExponentInput(String text) {
         if ("E+0".equals(expField.getText())) {
             expField.setText(text.equals("0") ? "E+0" : "E+" + text);
-        } else {
+        } else if (expField.getText().length() < 5) {
             expField.setText(expField.getText() + text);
         }
     }
@@ -92,13 +104,12 @@ public class CalculatorController {
         isResultDisplayed = false;
         isOperatorPending = false;
         lastWasOperator = false;
-        expField.setText("");
         isExponentMode = false;
     }
-    
+
     public void handleExp() {
         if (!isExponentMode && !isResultDisplayed && !isOperatorPending) {
-            expField.setText("E+0"); // Add 'E' to enter exponent mode
+            expField.setText("E+0");
             isExponentMode = true;
         }
     }
@@ -111,9 +122,7 @@ public class CalculatorController {
             calculatorLogic.pushOperand(operand);
             calculatorLogic.pushOperator(operation);
             operatorField.setText(SymbolFormatter.getDisplaySymbol(operation));
-            isOperatorPending = true;
-            lastWasOperator = true;
-            isExponentMode = false;
+            resetFlags();
         }
     }
 
@@ -140,7 +149,7 @@ public class CalculatorController {
             } else {
                 resultString = formatForStandardDisplay(result);
 
-                if (shouldUseScientificNotation(resultString)) {
+                if (needsScientificNotation(resultString)) {
                     resultString = formatToScientific(result);
                     displayResultWithExponent(resultString);
                 } else {
@@ -152,67 +161,40 @@ public class CalculatorController {
             operatorField.setText("");
             calculatorLogic.clear();
             isResultDisplayed = true;
-            lastWasOperator = false;
-            isExponentMode = false;
         }
     }
 
-    private boolean shouldUseScientificNotation(String resultString) {
+    private boolean needsScientificNotation(String resultString) {
         String[] integerAndDecimal = resultString.split("\\.");
         String integerPart = integerAndDecimal[0];
-        return (integerPart.length() > 15 || (integerPart.equals("0") && integerAndDecimal.length > 1 && integerAndDecimal[1].startsWith("0000000000000")));
+        return (integerPart.length() > DISPLAY_MAX_LENGTH || (integerPart.equals("0") && integerAndDecimal.length > 1 && integerAndDecimal[1].startsWith("0000000000000")));
     }
 
     private String formatToScientific(double value) {
-        String formatted = String.format(SCIENTIFIC_FORMAT, value);
-        return removeTrailingDecimalPoint(trimTrailingZeros(formatted));
+        return String.format(SCIENTIFIC_FORMAT, value);
     }
 
     private void displayResultWithExponent(String resultString) {
         String[] parts = resultString.split("e");
-        displayField.setText(trimTrailingZeros(parts[0]).replaceAll("\\.$", "")); // Ensure no trailing dot
-        expField.setText("E" + formatExponent(Integer.parseInt(parts[1]))); // Correct formatting for exponent
+        displayField.setText(trimTrailingZeros(parts[0]).replaceAll("\\.$", ""));
+        expField.setText("E" + formatExponent(Integer.parseInt(parts[1])));
     }
 
     private String trimTrailingZeros(String value) {
-        // Check if value is in exponential form
         int eIndex = value.indexOf('E');
-        
         if (eIndex == -1) {
             eIndex = value.indexOf('e');
         }
 
-        if (eIndex == -1) {
-            // If not in exponential form, trim as usual
-            int i = value.length() - 1;
-            while (i > 0 && value.charAt(i) == '0') {
-                i--;
-            }
-            return value.substring(0, i + 1);
-        } else {
-            // If in exponential form, separate mantissa and exponent
-            String mantissa = value.substring(0, eIndex);
-            String exponent = value.substring(eIndex);
+        String mantissa = eIndex >= 0 ? value.substring(0, eIndex) : value;
+        String exponent = eIndex >= 0 ? value.substring(eIndex) : "";
 
-            // Trim trailing zeros from mantissa
-            int i = mantissa.length() - 1;
-            while (i > 0 && mantissa.charAt(i) == '0') {
-                i--;
-            }
-            mantissa = mantissa.substring(0, i + 1);
-
-            // Ensure no trailing decimal point in mantissa
-            if (mantissa.endsWith(".")) {
-                mantissa = mantissa.substring(0, mantissa.length() - 1);
-            }
-
-            // Reassemble mantissa and exponent
-            return mantissa + exponent;
+        int i = mantissa.length() - 1;
+        while (i > 0 && mantissa.charAt(i) == '0') {
+            i--;
         }
-    }
-
-    private String removeTrailingDecimalPoint(String value) {
-        return value.endsWith(".") ? value.substring(0, value.length() - 1) : value;
+        mantissa = mantissa.substring(0, i + 1);
+        return mantissa.endsWith(".") ? mantissa.substring(0, mantissa.length() - 1) + exponent : mantissa + exponent;
     }
 
     private String formatExponent(int exponent) {
@@ -223,12 +205,12 @@ public class CalculatorController {
         if (isExponentMode) {
             String currentText = expField.getText();
             if ("E+0".equals(currentText)) {
-                    return;
+                return;
             }
-            expField.setText((currentText.length() > 3) ? currentText.substring(0,currentText.length()-1) : "E+0");
+            expField.setText((currentText.length() > 3) ? currentText.substring(0, currentText.length() - 1) : "E+0");
         } else {
             String currentText = displayField.getText();
-            if (isResultDisplayed || isOperatorPending || "0".equals(currentText) || currentText.isEmpty()) {
+            if (isResultDisplayed || isOperatorPending || "0".equals(currentText)) {
                 return;
             }
             displayField.setText((currentText.length() > 1) ? currentText.substring(0, currentText.length() - 1) : "0");
@@ -237,30 +219,22 @@ public class CalculatorController {
 
     public void handleSignChange() {
         if (isExponentMode) {
-            expField.setText("E" + String.format("%+d", -Integer.valueOf(expField.getText().substring(1))));
+            int exponent = Integer.parseInt(expField.getText().substring(1));
+            expField.setText("E" + (exponent == 0 ? "+0" : String.format("%+d", -exponent)));
         } else {
             double currentValue = Double.parseDouble(displayField.getText());
             if (currentValue != 0.0) {
-                currentValue = -currentValue;
-                displayField.setText(formatForStandardDisplay(currentValue));
+                displayField.setText(formatForStandardDisplay(-currentValue));
             }
         }
     }
 
     private String formatForStandardDisplay(double value) {
-        if (value == (int) value) {
-            return Integer.toString((int) value);
-        }
-        String valueStr = String.format("%.15f", value);
-        return removeTrailingDecimalPoint(trimTrailingZeros(valueStr));
+        return (value == (int) value) ? Integer.toString((int) value) : trimTrailingZeros(String.format("%.15f", value));
     }
 
     public void handleAllClear() {
         resetDisplay();
         calculatorLogic.clear();
-        isResultDisplayed = false;
-        isOperatorPending = false;
-        lastWasOperator = false;
-        isExponentMode = false;
     }
 }
